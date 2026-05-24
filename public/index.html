@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnkiLLM Vocab Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-glow"></div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        <h1>AnkiLLM <span>Vocab Builder</span></h1>
+      </div>
+      <div class="header-controls">
+        <div class="app-lang-box">
+          <select id="app-lang-select" class="app-lang-select" title="表示言語 / Interface Language">
+            <option value="ja" selected>日本語 (JA)</option>
+            <option value="en">English (EN)</option>
+          </select>
+        </div>
+        <div class="status-bar">
+          <div id="anki-status" class="status-badge status-offline">
+            <span class="status-dot"></span>
+            Anki: <span>未接続</span>
+          </div>
+          <div id="gemini-status" class="status-badge status-offline">
+            <span class="status-dot"></span>
+            Gemini: <span>未設定</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <!-- Left Panel: Input and configuration -->
+      <section class="panel control-panel">
+        <div class="panel-section">
+          <h2><span class="number-badge">1</span> <span data-i18n="settings">設定</span></h2>
+          
+          <div class="api-key-box">
+            <label for="gemini-key-input">Gemini API Key</label>
+            <div class="input-with-button">
+              <input type="password" id="gemini-key-input" placeholder="AIzaSy...">
+              <button id="save-key-btn" class="btn btn-secondary" data-i18n="save">保存</button>
+            </div>
+            <p class="input-tip" data-i18n="api_key_tip">キーはローカル環境の <code>.env</code> ファイルに安全に保存されます。</p>
+          </div>
+
+          <div class="deck-select-box">
+            <label for="deck-select" data-i18n="deck_label">登録先デッキ (Deck)</label>
+            <div class="input-with-button">
+              <select id="deck-select">
+                <option value="" disabled selected data-i18n="loading">ロード中...</option>
+              </select>
+              <button id="new-deck-btn" class="btn btn-icon-only" title="新しいデッキを作成">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <h2><span class="number-badge">2</span> <span data-i18n="input_label">単語入力</span></h2>
+          <form id="vocab-form" onsubmit="return false;">
+            <div class="form-row">
+              <div class="form-group col">
+                <label for="source-lang-select" data-i18n="learn_label">学ぶ言語</label>
+                <select id="source-lang-select">
+                  <option value="English" selected>英語 (English)</option>
+                  <option value="Japanese">日本語 (Japanese)</option>
+                  <option value="German">ドイツ語 (German)</option>
+                  <option value="French">フランス語 (French)</option>
+                  <option value="Spanish">スペイン語 (Spanish)</option>
+                  <option value="Italian">イタリア語 (Italian)</option>
+                  <option value="Chinese">中国語 (Chinese)</option>
+                  <option value="Korean">韓国語 (Korean)</option>
+                  <option value="Russian">ロシア語 (Russian)</option>
+                  <option value="Portuguese">ポルトガル語 (Portuguese)</option>
+                  <option value="Dutch">オランダ語 (Dutch)</option>
+                  <option value="Arabic">アラビア語 (Arabic)</option>
+                  <option value="Auto-detect">自動検出 (Auto)</option>
+                </select>
+              </div>
+              <div class="form-group col">
+                <label for="target-lang-select" data-i18n="explain_label">説明の言語</label>
+                <select id="target-lang-select">
+                  <option value="Japanese" selected>日本語 (Japanese)</option>
+                  <option value="English">英語 (English)</option>
+                  <option value="German">ドイツ語 (German)</option>
+                  <option value="French">フランス語 (French)</option>
+                  <option value="Spanish">スペイン語 (Spanish)</option>
+                  <option value="Italian">イタリア語 (Italian)</option>
+                  <option value="Chinese">中国語 (Chinese)</option>
+                  <option value="Korean">韓国語 (Korean)</option>
+                  <option value="Russian">ロシア語 (Russian)</option>
+                  <option value="Portuguese">ポルトガル語 (Portuguese)</option>
+                  <option value="Dutch">オランダ語 (Dutch)</option>
+                  <option value="Arabic">アラビア語 (Arabic)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="word-input" data-i18n="word_label">単語を入力</label>
+              <input type="text" id="word-input" placeholder="例: ephemeral, Haus, éphémère" autocomplete="off" required>
+            </div>
+            <button type="submit" id="generate-btn" class="btn btn-primary btn-block">
+              <span class="btn-text" data-i18n="generate_btn">AIでカード情報を生成</span>
+              <div class="spinner hide"></div>
+            </button>
+          </form>
+        </div>
+
+        <div class="panel-section recent-section">
+          <h3 data-i18n="recent_title">最近追加した単語</h3>
+          <div id="recent-list" class="recent-list">
+            <p class="empty-state" data-i18n="recent_empty">このセッションで追加されたカードはありません</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Card Previews & Actions -->
+      <section class="panel preview-panel">
+        <h2><span class="number-badge">3</span> <span data-i18n="preview_title">生成プレビュー</span></h2>
+        
+        <div id="preview-placeholder" class="preview-placeholder">
+          <div class="placeholder-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="placeholder-icon">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="9" x2="15" y2="9"></line>
+              <line x1="9" y1="13" x2="15" y2="13"></line>
+              <line x1="9" y1="17" x2="13" y2="17"></line>
+            </svg>
+            <p data-i18n="preview_placeholder">単語を入力して生成すると、ここにAnkiカードのプレビューが表示されます。</p>
+          </div>
+        </div>
+
+        <div id="preview-content" class="preview-content hide">
+          <div class="preview-tabs">
+            <button class="tab-btn active" data-tab="front" data-i18n="tab_front">表面 (Front)</button>
+            <button class="tab-btn" data-tab="back" data-i18n="tab_back">裏面 (Back)</button>
+            <button class="tab-btn" data-tab="fields-view" data-i18n="tab_details">詳細データ</button>
+          </div>
+
+          <div class="card-previews">
+            <!-- Front Card Preview -->
+            <div id="card-preview-front" class="anki-preview-container active">
+              <div class="anki-card-frame">
+                <div class="preview-label-tag" data-i18n="preview_front_tag">Anki 表面プレビュー</div>
+                <div class="front-display-word" id="preview-front-word">word</div>
+              </div>
+            </div>
+
+            <!-- Back Card Preview -->
+            <div id="card-preview-back" class="anki-preview-container">
+              <div class="anki-card-frame">
+                <div class="preview-label-tag" data-i18n="preview_back_tag">Anki 裏面プレビュー</div>
+                <div id="preview-back-html-render">
+                  <!-- HTML card will be injected here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Raw fields data editor/viewer -->
+            <div id="card-preview-fields" class="anki-preview-container">
+              <div class="fields-data-grid">
+                <div class="field-item">
+                  <span class="field-name" data-i18n="field_base">原型 (Base Form)</span>
+                  <input type="text" id="field-base-form">
+                </div>
+                <div class="form-row">
+                  <div class="field-item col">
+                    <span class="field-name" data-i18n="field_article">冠詞 (Article)</span>
+                    <input type="text" id="field-article" placeholder="例: das, la, el">
+                  </div>
+                  <div class="field-item col">
+                    <span class="field-name" data-i18n="field_gender">性別 (Gender)</span>
+                    <select id="field-gender">
+                      <option value="none" data-i18n="gender_none">なし (None)</option>
+                      <option value="masculine" data-i18n="gender_masc">男性 (Masculine)</option>
+                      <option value="feminine" data-i18n="gender_fem">女性 (Feminine)</option>
+                      <option value="neuter" data-i18n="gender_neuter">中性 (Neuter)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field-item">
+                  <span class="field-name" data-i18n="field_meaning">意味 (Meaning)</span>
+                  <input type="text" id="field-meaning">
+                </div>
+                <div class="field-item">
+                  <span class="field-name" data-i18n="field_core">コアイメージ (Core Image)</span>
+                  <textarea id="field-core-image" rows="3"></textarea>
+                </div>
+                <div class="field-item">
+                  <span class="field-name" data-i18n="field_example_org">例文 [学習言語] (Example Original)</span>
+                  <input type="text" id="field-example-en">
+                </div>
+                <div class="field-item">
+                  <span class="field-name" data-i18n="field_example_tr">例文 [説明言語] (Example Translation)</span>
+                  <input type="text" id="field-example-ja">
+                </div>
+              </div>
+              <p class="edit-warning-info" data-i18n="edit_tip">💡 登録前にデータを微調整できます。調整した内容は「裏面プレビュー」に即時反映されます。</p>
+            </div>
+          </div>
+
+          <div class="action-footer">
+            <button id="add-to-anki-btn" class="btn btn-action btn-block">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              <span data-i18n="register_btn">このカードをAnkiに登録</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Deck Creation Dialog (Modal) -->
+  <div id="deck-modal" class="modal-overlay hide">
+    <div class="modal-content">
+      <h3 data-i18n="new_deck_title">新しいデッキの作成</h3>
+      <p data-i18n="new_deck_desc">作成するデッキ名を入力してください（ネストする階層は "English::Vocab" のようにコロン2つで区切って指定できます）。</p>
+      <input type="text" id="new-deck-input" placeholder="例: English::LLM_Vocab">
+      <div class="modal-buttons">
+        <button id="modal-cancel-btn" class="btn btn-secondary" data-i18n="cancel">キャンセル</button>
+        <button id="modal-create-btn" class="btn btn-primary" data-i18n="create">作成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast hide">
+    <span class="toast-icon"></span>
+    <span class="toast-message">メッセージ</span>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
