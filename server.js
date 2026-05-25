@@ -119,7 +119,7 @@ app.post('/api/anki/create-deck', async (req, res) => {
 
 // 5. Generate Vocabulary Details with Gemini
 app.post('/api/generate', async (req, res) => {
-  const { word, sourceLang = 'English', targetLang = 'Japanese' } = req.body;
+  const { word, sourceLang = 'English', targetLang = 'Japanese', model = 'gemini-2.5-flash' } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -129,10 +129,14 @@ app.post('/api/generate', async (req, res) => {
     return res.status(400).json({ error: 'Word is required.' });
   }
 
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  // Ensure model is valid (prevent injection)
+  const validModels = ['gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-3.5-flash'];
+  const selectedModel = validModels.includes(model) ? model : 'gemini-3.1-flash-lite';
+
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
 
   const prompt = `Analyze the vocabulary word: "${word.trim()}" in ${sourceLang}.
-You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang}, and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
 
   const payload = {
     contents: [
@@ -169,7 +173,7 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
           },
           etymology: {
             type: "STRING",
-            description: `The etymology (語源) or word origin of the word in ${targetLang}. Explain roots, prefixes, suffixes, or historical origin.`
+            description: `Detailed etymology (語源) or word origin of the word in ${targetLang}. Explain prefix, roots, suffixes, or origin. Do NOT return just a single character, parenthesis, or symbol.`
           },
           exampleSentence: {
             type: "OBJECT",
@@ -212,6 +216,7 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
     }
 
     const textResponse = data.candidates[0].content.parts[0].text;
+    console.log('Gemini Response:', textResponse);
     const parsedData = JSON.parse(textResponse);
     
     res.json(parsedData);

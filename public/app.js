@@ -171,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const targetLangSelect = document.getElementById('target-lang-select');
   const deckSelect = document.getElementById('deck-select');
   const newDeckBtn = document.getElementById('new-deck-btn');
+  const modelSelect = document.getElementById('model-select');
   
   const vocabForm = document.getElementById('vocab-form');
   const wordInput = document.getElementById('word-input');
@@ -458,7 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ 
           word, 
           sourceLang: sourceLangSelect.value, 
-          targetLang: targetLangSelect.value 
+          targetLang: targetLangSelect.value,
+          model: modelSelect.value
         }),
       });
       const data = await res.json();
@@ -578,6 +580,16 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast(translations[state.appLang].toast_add_error + error.message, 'error');
     } finally {
       addToAnkiBtn.disabled = false;
+    }
+  });
+
+  // Keyboard shortcut to add card (Ctrl+Enter or Cmd+Enter)
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      if (state.currentData && !addToAnkiBtn.disabled && !deckModal.classList.contains('hide') === false) {
+        e.preventDefault();
+        addToAnkiBtn.click();
+      }
     }
   });
 
