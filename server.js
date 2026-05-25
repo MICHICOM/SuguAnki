@@ -132,7 +132,7 @@ app.post('/api/generate', async (req, res) => {
   const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
   const prompt = `Analyze the vocabulary word: "${word.trim()}" in ${sourceLang}.
-You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang}, and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
 
   const payload = {
     contents: [
@@ -167,6 +167,10 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
             type: "STRING",
             description: `The core image (コアイメージ), essential nuance, or visual/mental image of the word in ${targetLang}. Explain the fundamental concept.`
           },
+          etymology: {
+            type: "STRING",
+            description: `The etymology (語源) or word origin of the word in ${targetLang}. Explain roots, prefixes, suffixes, or historical origin.`
+          },
           exampleSentence: {
             type: "OBJECT",
             properties: {
@@ -182,7 +186,7 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
             required: ["original", "translation"]
           }
         },
-        required: ["baseForm", "gender", "article", "meaning", "coreImage", "exampleSentence"]
+        required: ["baseForm", "gender", "article", "meaning", "coreImage", "etymology", "exampleSentence"]
       }
     }
   };

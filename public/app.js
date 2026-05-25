@@ -63,6 +63,7 @@ const translations = {
     gender_neuter: "中性 (Neuter)",
     field_meaning: "意味 (Meaning)",
     field_core: "コアイメージ (Core Image)",
+    field_etymology: "語源 (Etymology)",
     field_example_org: "例文 [学習言語] (Example Original)",
     field_example_tr: "例文 [説明言語] (Example Translation)",
     edit_tip: "💡 登録前にデータを微調整できます。調整した内容は「裏面プレビュー」に即時反映されます。",
@@ -120,6 +121,7 @@ const translations = {
     gender_neuter: "Neuter",
     field_meaning: "Meaning",
     field_core: "Core Image",
+    field_etymology: "Etymology",
     field_example_org: "Example (Original)",
     field_example_tr: "Example (Translation)",
     edit_tip: "💡 You can fine-tune the data before adding. Changes reflect instantly on the Back preview.",
@@ -190,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const fieldGender = document.getElementById('field-gender');
   const fieldMeaning = document.getElementById('field-meaning');
   const fieldCoreImage = document.getElementById('field-core-image');
+  const fieldEtymology = document.getElementById('field-etymology');
   const fieldExampleEn = document.getElementById('field-example-en');
   const fieldExampleJa = document.getElementById('field-example-ja');
   
@@ -487,6 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fieldGender.value = data.gender || 'none';
     fieldMeaning.value = data.meaning;
     fieldCoreImage.value = data.coreImage;
+    fieldEtymology.value = data.etymology || '';
     fieldExampleEn.value = data.exampleSentence.original;
     fieldExampleJa.value = data.exampleSentence.translation;
   }
@@ -498,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Watch Field Editor changes to dynamically update preview
-  const liveInputs = [fieldBaseForm, fieldArticle, fieldGender, fieldMeaning, fieldCoreImage, fieldExampleEn, fieldExampleJa];
+  const liveInputs = [fieldBaseForm, fieldArticle, fieldGender, fieldMeaning, fieldCoreImage, fieldEtymology, fieldExampleEn, fieldExampleJa];
   liveInputs.forEach(input => {
     const eventName = input.tagName === 'SELECT' ? 'change' : 'input';
     input.addEventListener(eventName, () => {
@@ -510,6 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.currentData.gender = fieldGender.value;
       state.currentData.meaning = fieldMeaning.value;
       state.currentData.coreImage = fieldCoreImage.value;
+      state.currentData.etymology = fieldEtymology.value;
       state.currentData.exampleSentence = {
         original: fieldExampleEn.value,
         translation: fieldExampleJa.value
@@ -745,6 +750,14 @@ document.addEventListener('DOMContentLoaded', () => {
     border-left: 4px solid #fab387;
     text-align: left !important;
   }
+  .anki-value.etymology {
+    color: #cba6f7;
+    background: #252538;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 4px solid #cba6f7;
+    text-align: left !important;
+  }
   .anki-value.example-en {
     font-style: italic;
     color: #a6e3a1;
@@ -794,6 +807,11 @@ document.addEventListener('DOMContentLoaded', () => {
       background: #f8fafc;
       border-left-color: #d97706;
     }
+    .anki-value.etymology {
+      color: #7c3aed;
+      background: #f8fafc;
+      border-left-color: #7c3aed;
+    }
     .anki-value.example-en {
       color: #15803d;
     }
@@ -815,6 +833,10 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="anki-section">
     <div class="anki-label">コアイメージ (Core Image)</div>
     <div class="anki-value core-image">${escapeHtml(data.coreImage, true)}</div>
+  </div>
+  <div class="anki-section">
+    <div class="anki-label">語源 (Etymology)</div>
+    <div class="anki-value etymology">${escapeHtml(data.etymology, true)}</div>
   </div>
   <div class="anki-section">
     <div class="anki-label">例文 (Example)</div>
