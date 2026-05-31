@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "AnkiLLM Desktop App",
   "main": "main.js",
-  "author": "AnkiLLM Team",
+  "author": "MICHICOM",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
