@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>AnkiLLM Vocab Builder</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,11 +21,40 @@
         <h1>AnkiLLM <span>Vocab Builder</span></h1>
       </div>
       <div class="header-controls">
-        <div class="app-lang-box">
-          <select id="app-lang-select" class="app-lang-select" title="表示言語 / Interface Language">
-            <option value="ja" selected>日本語 (JA)</option>
-            <option value="en">English (EN)</option>
-          </select>
+        <div class="lang-selectors-column">
+          <div class="app-lang-box">
+            <select id="source-lang-select" class="app-lang-select" title="学ぶ言語 / Source Language">
+              <option value="English" selected>英語 (English)</option>
+              <option value="Japanese">日本語 (Japanese)</option>
+              <option value="German">ドイツ語 (German)</option>
+              <option value="French">フランス語 (French)</option>
+              <option value="Spanish">スペイン語 (Spanish)</option>
+              <option value="Italian">イタリア語 (Italian)</option>
+              <option value="Chinese">中国語 (Chinese)</option>
+              <option value="Korean">韓国語 (Korean)</option>
+              <option value="Russian">ロシア語 (Russian)</option>
+              <option value="Portuguese">ポルトガル語 (Portuguese)</option>
+              <option value="Dutch">オランダ語 (Dutch)</option>
+              <option value="Arabic">アラビア語 (Arabic)</option>
+              <option value="Auto-detect">自動検出 (Auto)</option>
+            </select>
+          </div>
+          <div class="app-lang-box">
+            <select id="target-lang-select" class="app-lang-select" title="説明の言語 / Target Language">
+              <option value="Japanese" selected>日本語 (Japanese)</option>
+              <option value="English">英語 (English)</option>
+              <option value="German">ドイツ語 (German)</option>
+              <option value="French">フランス語 (French)</option>
+              <option value="Spanish">スペイン語 (Spanish)</option>
+              <option value="Italian">イタリア語 (Italian)</option>
+              <option value="Chinese">中国語 (Chinese)</option>
+              <option value="Korean">韓国語 (Korean)</option>
+              <option value="Russian">ロシア語 (Russian)</option>
+              <option value="Portuguese">ポルトガル語 (Portuguese)</option>
+              <option value="Dutch">オランダ語 (Dutch)</option>
+              <option value="Arabic">アラビア語 (Arabic)</option>
+            </select>
+          </div>
         </div>
         <button id="open-settings-btn" class="btn btn-icon-only" title="Settings" style="width: 32px; height: 32px; padding: 4px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
@@ -44,72 +73,8 @@
     </header>
 
     <main class="app-grid">
-      <!-- Left Panel: Input and configuration -->
-      <section class="panel control-panel">
-
-
-        <div class="panel-section">
-          <h2><span class="number-badge">1</span> <span data-i18n="input_label">単語入力</span></h2>
-          <form id="vocab-form" onsubmit="return false;">
-            <div class="form-row">
-              <div class="form-group col">
-                <label for="source-lang-select" data-i18n="learn_label">学ぶ言語</label>
-                <select id="source-lang-select">
-                  <option value="English" selected>英語 (English)</option>
-                  <option value="Japanese">日本語 (Japanese)</option>
-                  <option value="German">ドイツ語 (German)</option>
-                  <option value="French">フランス語 (French)</option>
-                  <option value="Spanish">スペイン語 (Spanish)</option>
-                  <option value="Italian">イタリア語 (Italian)</option>
-                  <option value="Chinese">中国語 (Chinese)</option>
-                  <option value="Korean">韓国語 (Korean)</option>
-                  <option value="Russian">ロシア語 (Russian)</option>
-                  <option value="Portuguese">ポルトガル語 (Portuguese)</option>
-                  <option value="Dutch">オランダ語 (Dutch)</option>
-                  <option value="Arabic">アラビア語 (Arabic)</option>
-                  <option value="Auto-detect">自動検出 (Auto)</option>
-                </select>
-              </div>
-              <div class="form-group col">
-                <label for="target-lang-select" data-i18n="explain_label">説明の言語</label>
-                <select id="target-lang-select">
-                  <option value="Japanese" selected>日本語 (Japanese)</option>
-                  <option value="English">英語 (English)</option>
-                  <option value="German">ドイツ語 (German)</option>
-                  <option value="French">フランス語 (French)</option>
-                  <option value="Spanish">スペイン語 (Spanish)</option>
-                  <option value="Italian">イタリア語 (Italian)</option>
-                  <option value="Chinese">中国語 (Chinese)</option>
-                  <option value="Korean">韓国語 (Korean)</option>
-                  <option value="Russian">ロシア語 (Russian)</option>
-                  <option value="Portuguese">ポルトガル語 (Portuguese)</option>
-                  <option value="Dutch">オランダ語 (Dutch)</option>
-                  <option value="Arabic">アラビア語 (Arabic)</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="word-input" data-i18n="word_label">単語を入力</label>
-              <input type="text" id="word-input" placeholder="例: ephemeral, Haus, éphémère" autocomplete="off" required>
-            </div>
-            <button type="submit" id="generate-btn" class="btn btn-primary btn-block">
-              <span class="btn-text" data-i18n="generate_btn">AIでカード情報を生成</span>
-              <div class="spinner hide"></div>
-            </button>
-          </form>
-        </div>
-
-        <div class="panel-section recent-section">
-          <h3 data-i18n="recent_title">最近追加した単語</h3>
-          <div id="recent-list" class="recent-list">
-            <p class="empty-state" data-i18n="recent_empty">このセッションで追加されたカードはありません</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Right Panel: Card Previews & Actions -->
+      <!-- Left Panel: Card Previews & Actions -->
       <section class="panel preview-panel">
-        <h2><span class="number-badge">2</span> <span data-i18n="preview_title">生成プレビュー</span></h2>
         
         <div id="preview-placeholder" class="preview-placeholder">
           <div class="placeholder-content">
@@ -208,6 +173,31 @@
           </div>
         </div>
       </section>
+
+      <!-- Right Panel: Input and configuration -->
+      <section class="panel control-panel">
+
+
+        <div class="panel-section">
+          <form id="vocab-form" onsubmit="return false;">
+            <div class="form-group">
+              <label for="word-input" data-i18n="word_label">単語を入力</label>
+              <input type="text" id="word-input" placeholder="例: ephemeral, Haus, éphémère" autocomplete="off" required>
+            </div>
+            <button type="submit" id="generate-btn" class="btn btn-primary btn-block">
+              <span class="btn-text" data-i18n="generate_btn">AIでカード情報を生成</span>
+              <div class="spinner hide"></div>
+            </button>
+          </form>
+        </div>
+
+        <div class="panel-section recent-section">
+          <h3 data-i18n="recent_title">最近追加した単語</h3>
+          <div id="recent-list" class="recent-list">
+            <p class="empty-state" data-i18n="recent_empty">このセッションで追加されたカードはありません</p>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -241,6 +231,14 @@
           <button id="save-key-btn" class="btn btn-secondary" data-i18n="save">保存</button>
         </div>
         <p class="input-tip" data-i18n="api_key_tip">キーはローカル環境の <code>.env</code> ファイルに安全に保存されます。</p>
+      </div>
+
+      <div class="api-key-box" style="margin-top: 15px;">
+        <label for="app-lang-select" data-i18n="app_lang_label">システム言語 (System Language)</label>
+        <select id="app-lang-select" style="width: 100%; margin-top: 5px; padding: 10px; background: #313244; color: #cdd6f4; border: 1px solid #45475a; border-radius: 6px;">
+          <option value="ja" selected>日本語 (JA)</option>
+          <option value="en">English (EN)</option>
+        </select>
       </div>
 
       <div class="api-key-box" style="margin-top: 15px;">
