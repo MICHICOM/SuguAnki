@@ -48,15 +48,6 @@ To use this tool, you need to install and launch the following:
    * Check the preview of the generated results (base form, meaning, core image, example sentence, and translation).
    * Click "Add this card to Anki" to automatically add a beautifully styled card to Anki!
 
-## 📦 Building from Source (Packaging)
-
-To build the standalone `.exe` installer for Windows:
-```bash
-npm run build:windows
-```
-The installer will be generated in the `apps/windows/dist/` directory.
-
----
 
 # 日本語
 
@@ -98,11 +89,3 @@ Gemini APIを使用して多言語の語彙カード情報を自動生成し、A
    - 単語を入力して「AIでカード情報を生成」をクリックします。
    - 生成結果（原型、意味、コアイメージ、例文と翻訳）のプレビューを確認します。
    - 「このカードをAnkiに登録」を押すと、Ankiへ自動的にデザインされたカードが追加されます！
-
-## 📦 ビルド・パッケージ化について
-
-ご自身でWindows用のインストーラー（.exe）を作成する場合は、以下のコマンドを実行します：
-```bash
-npm run build:windows
-```
-ビルドが完了すると、`apps/windows/dist/` フォルダ内にセットアップ用ファイルが生成されます。
