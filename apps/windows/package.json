@@ -1,0 +1,46 @@
+{
+  "name": "@ankillm/windows",
+  "version": "1.0.0",
+  "description": "AnkiLLM Desktop App",
+  "main": "main.js",
+  "author": "AnkiLLM Team",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "electron": "30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.michi.ankillm",
+    "productName": "AnkiLLM",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": "nsis"
+    },
+    "extraResources": [
+      {
+        "from": "../../packages/backend",
+        "to": "backend",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../../packages/frontend/public",
+        "to": "frontend/public",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}

@@ -33,10 +33,12 @@ const languageNames = {
 
 const translations = {
   ja: {
-    settings: "設定",
+    settings: "デッキ設定",
+    settings_title: "アプリ設定",
     save: "保存",
     api_key_tip: "キーはローカル環境の <code>.env</code> ファイルに安全に保存されます。",
     deck_label: "登録先デッキ (Deck)",
+    no_decks: "デッキがありません (No decks)",
     loading: "ロード中...",
     input_label: "単語入力",
     learn_label: "学ぶ言語",
@@ -91,10 +93,12 @@ const translations = {
     toast_add_error: "登録エラー: "
   },
   en: {
-    settings: "Settings",
+    settings: "Deck Settings",
+    settings_title: "App Settings",
     save: "Save",
     api_key_tip: "The key is securely saved in your local <code>.env</code> file.",
     deck_label: "Target Deck",
+    no_decks: "No decks found",
     loading: "Loading...",
     input_label: "Word Input",
     learn_label: "Language to Learn",
@@ -206,6 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalCancelBtn = document.getElementById('modal-cancel-btn');
   const modalCreateBtn = document.getElementById('modal-create-btn');
   
+  const settingsModal = document.getElementById('settings-modal');
+  const openSettingsBtn = document.getElementById('open-settings-btn');
+  const settingsCloseBtn = document.getElementById('settings-close-btn');
+  
   // Toast Element
   const toast = document.getElementById('toast');
   const toastMessage = toast.querySelector('.toast-message');
@@ -213,8 +221,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Language
   applyLanguage(state.appLang);
 
-  // Initialize Status checks
-  checkSystemStatus();
+  // Initialize Status checks with a short delay for Capacitor
+  setTimeout(checkSystemStatus, 500);
   renderRecentCards();
 
   // Restore language selections
@@ -226,12 +234,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedTargetLang && Array.from(targetLangSelect.options).some(o => o.value === savedTargetLang)) {
     targetLangSelect.value = savedTargetLang;
   }
+  const savedModel = localStorage.getItem('anki_llm_model');
+  if (savedModel && Array.from(modelSelect.options).some(o => o.value === savedModel)) {
+    modelSelect.value = savedModel;
+  }
 
   sourceLangSelect.addEventListener('change', () => {
     localStorage.setItem('anki_llm_source_lang', sourceLangSelect.value);
   });
   targetLangSelect.addEventListener('change', () => {
     localStorage.setItem('anki_llm_target_lang', targetLangSelect.value);
+  });
+  modelSelect.addEventListener('change', () => {
+    localStorage.setItem('anki_llm_model', modelSelect.value);
   });
 
   // --- Translation Engine ---
@@ -294,33 +309,99 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- API / Backend Interactions ---
+  const ANKI_CONNECT_URL = 'http://localhost:8765';
+
+  // Native platform detection
+  const isAndroidApp = window.Capacitor && window.Capacitor.isNativePlatform();
+
+  // Hide the new deck button on Android
+  if (isAndroidApp) {
+    newDeckBtn.style.display = 'none';
+  }
+
+  async function callAnkiConnect(action, params = {}) {
+    if (isAndroidApp) {
+      try {
+        const { AnkiDroid } = window.Capacitor.Plugins;
+        if (action === 'deckNames') {
+          const result = await AnkiDroid.getDecks();
+          return result.decks;
+        } else if (action === 'createDeck') {
+          await AnkiDroid.createDeck({ deckName: params.deck });
+          return true;
+        } else if (action === 'addNote') {
+          const result = await AnkiDroid.addNote({
+            deckName: params.note.deckName,
+            fields: params.note.fields
+          });
+          return result;
+        }
+        throw new Error(`Unsupported native action: ${action}`);
+      } catch (error) {
+        console.error('Native AnkiDroid Error:', error);
+        throw new Error(error.message || `AnkiDroid connection failed.`);
+      }
+    } else {
+      try {
+        const response = await fetch(ANKI_CONNECT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action,
+            version: 6,
+            params,
+          }),
+        });
+        const data = await response.json();
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        return data.result;
+      } catch (error) {
+        console.error(`AnkiConnect Error (${action}):`, error.message);
+        throw new Error(`AnkiConnect connection failed. Please ensure Anki or AnkiDroid is running and API integration is enabled.`);
+      }
+    }
+  }
 
   // Check Configuration & Anki Connection
   async function checkSystemStatus() {
     try {
-      // 1. Check Config on server
-      const configRes = await fetch('/api/config');
-      const configData = await configRes.json();
-      state.geminiConfigured = configData.geminiConfigured;
+      // 1. Check Gemini config in localStorage
+      const savedApiKey = localStorage.getItem('anki_llm_gemini_api_key');
+      state.geminiConfigured = !!savedApiKey;
       
       updateGeminiStatusUI(state.geminiConfigured);
 
-      // 2. Check Anki connectivity
-      const ankiRes = await fetch('/api/anki/status');
-      const ankiData = await ankiRes.json();
-      state.ankiConnected = ankiData.connected;
-
-      if (state.ankiConnected) {
-        state.decks = ankiData.decks;
-        updateAnkiStatusUI(true);
-        populateDecks(state.decks);
-      } else {
-        updateAnkiStatusUI(false, ankiData.error);
-        disableAnkiControls();
+      // 2. Request Android permission if native app
+      if (isAndroidApp) {
+        const plugins = window.Capacitor.Plugins;
+        if (!plugins || !plugins.AnkiDroid) {
+          throw new Error("ネイティブプラグイン AnkiDroid が検出されませんでした。");
+        }
+        const { AnkiDroid } = plugins;
+        let permStatus = await AnkiDroid.checkPermission();
+        if (!permStatus.granted) {
+          permStatus = await AnkiDroid.requestPermission();
+        }
+        if (!permStatus.granted) {
+          throw new Error("AnkiDroidへのデータベースアクセス権限がありません。設定から許可してください。");
+        }
       }
+
+      // 3. Check Anki connectivity
+      const decks = await callAnkiConnect('deckNames');
+      state.ankiConnected = true;
+      state.decks = decks;
+      updateAnkiStatusUI(true);
+      populateDecks(state.decks);
     } catch (error) {
       console.error('Status check failed:', error);
-      showToast(translations[state.appLang].toast_server_error, 'error');
+      updateAnkiStatusUI(false, error.message);
+      disableAnkiControls();
+      showToast("Anki接続エラー: " + error.message, 'error');
     }
   }
 
@@ -334,14 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveKeyBtn.disabled = true;
     try {
-      const res = await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ geminiApiKey: key }),
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-
+      localStorage.setItem('anki_llm_gemini_api_key', key);
       showToast(translations[state.appLang].toast_api_key_saved, 'success');
       state.geminiConfigured = true;
       updateGeminiStatusUI(true);
@@ -355,11 +429,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Populate Deck dropdown
   function populateDecks(decks) {
+    decks = (decks || []).filter(d => d); // Filter out null/empty strings
     deckSelect.innerHTML = '';
     if (decks.length === 0) {
       const opt = document.createElement('option');
       opt.value = '';
-      opt.textContent = translations[state.appLang].loading; // Placeholder
+      opt.textContent = translations[state.appLang].no_decks || "デッキがありません"; // Placeholder
       deckSelect.appendChild(opt);
       return;
     }
@@ -392,6 +467,10 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast(translations[state.appLang].toast_anki_disconnected, 'error');
       return;
     }
+    if (isAndroidApp) {
+      alert("Android版ではアプリから直接デッキを作成できません。\nお手数ですが、一度 AnkiDroid アプリを開いてデッキを作成してから、再度お試しください。");
+      return;
+    }
     deckModal.classList.remove('hide');
     newDeckInput.value = '';
     newDeckInput.focus();
@@ -410,14 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalCreateBtn.disabled = true;
     try {
-      const res = await fetch('/api/anki/create-deck', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deckName }),
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-
+      await callAnkiConnect('createDeck', { deck: deckName });
       showToast(translations[state.appLang].toast_deck_created.replace('{name}', deckName), 'success');
       
       // Refresh decks list
@@ -434,13 +506,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Settings Modal events
+  openSettingsBtn.addEventListener('click', () => {
+    settingsModal.classList.remove('hide');
+  });
+
+  settingsCloseBtn.addEventListener('click', () => {
+    settingsModal.classList.add('hide');
+  });
+
   // Generate Vocab Card Action
   vocabForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const word = wordInput.value.trim();
     if (!word) return;
 
-    if (!state.geminiConfigured) {
+    const apiKey = localStorage.getItem('anki_llm_gemini_api_key');
+    if (!apiKey) {
       showToast(translations[state.appLang].toast_gemini_key_required, 'warning');
       return;
     }
@@ -453,26 +535,100 @@ document.addEventListener('DOMContentLoaded', () => {
     previewContent.classList.add('hide');
 
     try {
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          word, 
-          sourceLang: sourceLangSelect.value, 
-          targetLang: targetLangSelect.value,
-          model: modelSelect.value
-        }),
-      });
-      const data = await res.json();
-      
-      if (data.error) throw new Error(data.error);
+      const sourceLang = sourceLangSelect.value;
+      const targetLang = targetLangSelect.value;
+      const model = modelSelect.value;
 
-      state.currentData = data;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      const prompt = `Analyze the vocabulary word: "${word}" in ${sourceLang}.
+You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+
+      const payload = {
+        contents: [
+          {
+            parts: [
+              { text: prompt }
+            ]
+          }
+        ],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              baseForm: {
+                type: "STRING",
+                description: `The dictionary base form (原型) of the word in ${sourceLang}. Use standard capitalization rules of ${sourceLang} (e.g. in German, nouns MUST start with a capital letter like 'Haus', verbs lowercase like 'gehen'; in other languages like English, lowercase). Do NOT include the article in this field.`
+              },
+              gender: {
+                type: "STRING",
+                description: "The grammatical gender of the word if applicable ('masculine', 'feminine', 'neuter', or 'none')."
+              },
+              article: {
+                type: "STRING",
+                description: `The default singular definite article commonly learned with this word in ${sourceLang} (e.g., 'der', 'die', 'das' for German; 'le', 'la' for French; 'el', 'la' for Spanish). Leave empty if not applicable or not a noun.`
+              },
+              meaning: {
+                type: "STRING",
+                description: `Concise meaning(s) (意味) of the word in ${targetLang}.`
+              },
+              coreImage: {
+                type: "STRING",
+                description: `The core image (コアイメージ), essential nuance, or visual/mental image of the word in ${targetLang}. Explain the fundamental concept.`
+              },
+              etymology: {
+                type: "STRING",
+                description: `Detailed etymology (語源) or word origin of the word in ${targetLang}. Explain prefix, roots, suffixes, or origin. Do NOT return just a single character, parenthesis, or symbol.`
+              },
+              exampleSentence: {
+                type: "OBJECT",
+                properties: {
+                  original: {
+                    type: "STRING",
+                    description: `A natural example sentence in the source language (${sourceLang}) demonstrating the word's usage.`
+                  },
+                  translation: {
+                    type: "STRING",
+                    description: `Translation of the example sentence in the target language (${targetLang}).`
+                  }
+                },
+                required: ["original", "translation"]
+              }
+            },
+            required: ["baseForm", "gender", "article", "meaning", "coreImage", "etymology", "exampleSentence"]
+          }
+        }
+      };
+
+      const response = await fetch(geminiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Gemini API returned HTTP ${response.status}: ${errText}`);
+      }
+
+      const resData = await response.json();
+      
+      if (!resData.candidates || resData.candidates.length === 0 || !resData.candidates[0].content || !resData.candidates[0].content.parts || resData.candidates[0].content.parts.length === 0) {
+        throw new Error('Invalid response structure from Gemini API');
+      }
+
+      const textResponse = resData.candidates[0].content.parts[0].text;
+      const parsedData = JSON.parse(textResponse);
+
+      state.currentData = parsedData;
       showToast(translations[state.appLang].toast_gen_complete, 'success');
 
       // Populate card editing values
-      populateFieldsEditor(data);
-      updatePreview(data);
+      populateFieldsEditor(parsedData);
+      updatePreview(parsedData);
 
       previewPlaceholder.classList.add('hide');
       previewContent.classList.remove('hide');
@@ -546,26 +702,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const frontText = generateFrontHtml(state.currentData);
     const backHtml = generateBackHtml(state.currentData);
 
-    const payload = {
-      deckName,
-      modelName: 'Basic',
-      fields: {
-        Front: frontText,
-        Back: backHtml
-      },
-      tags: ['AnkiLLM']
+    const noteParams = {
+      note: {
+        deckName,
+        modelName: 'Basic',
+        fields: {
+          Front: frontText,
+          Back: backHtml
+        },
+        options: {
+          allowDuplicate: false,
+        },
+        tags: ['AnkiLLM']
+      }
     };
 
     try {
-      const res = await fetch('/api/anki/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-
-      showToast(translations[state.appLang].toast_add_success.replace('{name}', deckName), 'success');
+      const res = await callAnkiConnect('addNote', noteParams);
+      
+      if (res && res.result === null) {
+        throw new Error(res.error);
+      }
+      
+      if (res && res.cardsGenerated === 0) {
+        showToast("Ankiにデータは送信されましたが、カードが生成されませんでした。Ankiのノートタイプ(基本など)のフィールド設定を確認してください。", 'error');
+      } else {
+        showToast(translations[state.appLang].toast_add_success.replace('{name}', deckName), 'success');
+      }
       
       // Save to recent list
       saveToRecent(state.currentData.baseForm, state.currentData.meaning, deckName);

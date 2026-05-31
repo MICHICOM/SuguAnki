@@ -4,7 +4,8 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 // Load environment variables
-dotenv.config();
+const envPath = process.env.ENV_FILE_PATH || path.join(__dirname, '.env');
+dotenv.config({ path: envPath });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 // Helper to call AnkiConnect
 async function callAnkiConnect(action, params = {}) {
@@ -60,7 +61,6 @@ app.post('/api/config', (req, res) => {
   }
 
   try {
-    const envPath = path.join(__dirname, '.env');
     let envContent = '';
 
     if (fs.existsSync(envPath)) {

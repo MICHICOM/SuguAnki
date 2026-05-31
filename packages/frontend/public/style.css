@@ -797,3 +797,7 @@ select:focus {
   color: var(--accent-primary);
   font-weight: bold;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
