@@ -1,5 +1,8 @@
-# Disclaimer: This project is powered by LLMs. Use at your own risk.
-# このプロジェクトはLLMを用いて作成されています。ご使用は自己責任でお願いいたします。
+## Disclaimer: This project is powered by LLMs. Use at your own risk.
+## このプロジェクトはLLMを用いて作成されています。ご使用は自己責任でお願いいたします。
+
+# [Download the latest version from here](https://github.com/MICHICOM/AnkiLLM/releases/)
+# [インストールはこちらから](https://github.com/MICHICOM/AnkiLLM/releases/)
 
 ---
 
