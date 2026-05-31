@@ -33,6 +33,12 @@ const languageNames = {
 
 const translations = {
   ja: {
+    app_lang_label: "システム言語",
+    model_label: "AIモデル",
+    get_api_key: "APIキーの取得はこちらから (Get API Key)",
+    model_31_lite: "Gemini 3.1 Flash Lite (推奨・1日500回)",
+    model_25_flash: "Gemini 2.5 Flash (1日20回)",
+    model_35_flash: "Gemini 3.5 Flash (最新・1日20回)",
     settings: "デッキ設定",
     settings_title: "アプリ設定",
     save: "保存",
@@ -93,6 +99,12 @@ const translations = {
     toast_add_error: "登録エラー: "
   },
   en: {
+    app_lang_label: "System Language",
+    model_label: "AI Model",
+    get_api_key: "Get API Key Here",
+    model_31_lite: "Gemini 3.1 Flash Lite (Recommended, 500/day)",
+    model_25_flash: "Gemini 2.5 Flash (20/day)",
+    model_35_flash: "Gemini 3.5 Flash (Latest, 20/day)",
     settings: "Deck Settings",
     settings_title: "App Settings",
     save: "Save",
