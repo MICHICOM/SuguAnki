@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "dotenv": "^16.4.5",
+    "electron-log": "^5.4.4",
+    "electron-updater": "^6.8.3",
     "express": "^4.19.2"
   },
   "devDependencies": {
@@ -17,6 +19,11 @@
     "electron-builder": "^24.13.3"
   },
   "build": {
+    "publish": {
+      "provider": "github",
+      "owner": "MICHICOM",
+      "repo": "AnkiLLM"
+    },
     "appId": "com.michi.ankillm",
     "productName": "AnkiLLM",
     "directories": {
@@ -24,7 +31,10 @@
     },
     "win": {
       "icon": "build/icon.ico",
-      "target": ["nsis", "zip"]
+      "target": [
+        "nsis",
+        "zip"
+      ]
     },
     "extraResources": [
       {

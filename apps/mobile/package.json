@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@capacitor-community/file-opener": "^8.0.1",
     "@capacitor/android": "^8.3.4",
-    "@capacitor/core": "^8.3.4"
+    "@capacitor/core": "^8.3.4",
+    "@capacitor/filesystem": "^8.1.2"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

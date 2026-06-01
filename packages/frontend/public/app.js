@@ -96,7 +96,12 @@ const translations = {
     toast_gen_complete: "カードの生成が完了しました！",
     toast_select_deck: "登録先デッキを選択してください。",
     toast_add_success: "Ankiデッキ \"{name}\" に登録しました！",
-    toast_add_error: "登録エラー: "
+    toast_add_error: "登録エラー: ",
+    update_available: "新しいアップデート（{latest}）が利用可能です。\nダウンロードしてインストールしますか？\n(現在のバージョン: {current})",
+    update_downloading: "アップデートのダウンロードを開始します...",
+    update_ready: "ダウンロード完了。インストールを開始します...",
+    update_plugin_error: "必要なプラグインがロードされていません",
+    update_error: "アップデートの確認・処理中にエラーが発生しました: "
   },
   en: {
     app_lang_label: "System Language",
@@ -162,7 +167,12 @@ const translations = {
     toast_gen_complete: "Card generation complete!",
     toast_select_deck: "Please select a target deck.",
     toast_add_success: "Registered to Anki deck \"{name}\"!",
-    toast_add_error: "Registration error: "
+    toast_add_error: "Registration error: ",
+    update_available: "A new update ({latest}) is available.\nWould you like to download and install it?\n(Current version: {current})",
+    update_downloading: "Downloading update...",
+    update_ready: "Download complete. Starting installation...",
+    update_plugin_error: "Required plugins are not loaded.",
+    update_error: "An error occurred during the update process: "
   }
 };
 
@@ -321,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- API / Backend Interactions ---
-  const ANKI_CONNECT_URL = 'http://localhost:8765';
+  const ANKI_CONNECT_URL = 'http://127.0.0.1:8765';
 
   // Native platform detection
   const isAndroidApp = window.Capacitor && window.Capacitor.isNativePlatform();
@@ -373,7 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return data.result;
       } catch (error) {
         console.error(`AnkiConnect Error (${action}):`, error.message);
-        throw new Error(`AnkiConnect connection failed. Please ensure Anki or AnkiDroid is running and API integration is enabled.`);
+        if (error.message === 'Failed to fetch' || error.message.includes('NetworkError')) {
+          throw new Error(`AnkiConnect connection failed. Please ensure Anki or AnkiDroid is running and API integration is enabled.`);
+        }
+        throw error;
       }
     }
   }
@@ -1133,4 +1146,67 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
       toast.classList.add('hide');
     }, 4000);
   }
+
+  // --- Android Auto Updater ---
+  const CURRENT_APP_VERSION = "v1.0.0"; // Update this when releasing a new version
+  
+  async function checkForAndroidUpdate() {
+    if (!isAndroidApp) return;
+    try {
+      const response = await fetch('https://api.github.com/repos/MICHICOM/AnkiLLM/releases/latest');
+      if (!response.ok) return;
+      
+      const release = await response.json();
+      const latestVersion = release.tag_name;
+      
+      const cleanLatest = latestVersion.replace(/^v/, '');
+      const cleanCurrent = CURRENT_APP_VERSION.replace(/^v/, '');
+      
+      if (latestVersion && cleanLatest !== cleanCurrent) {
+        // Find APK asset
+        const apkAsset = release.assets.find(a => a.name.endsWith('.apk'));
+        if (!apkAsset) return;
+        
+        const confirmMsg = translations[state.appLang].update_available
+          .replace('{latest}', latestVersion)
+          .replace('{current}', CURRENT_APP_VERSION);
+          
+        const wantUpdate = confirm(confirmMsg);
+        
+        if (wantUpdate) {
+          showToast(translations[state.appLang].update_downloading, "info");
+          
+          const { Filesystem, FileOpener } = window.Capacitor.Plugins;
+          
+          if (!Filesystem || !FileOpener) {
+            throw new Error(translations[state.appLang].update_plugin_error);
+          }
+          
+          // Download the APK
+          const downloadRes = await Filesystem.downloadFile({
+            url: apkAsset.browser_download_url,
+            path: 'AnkiLLM_update.apk',
+            directory: 'CACHE' // Saving to cache directory
+          });
+          
+          showToast(translations[state.appLang].update_ready, "success");
+          
+          // Open the APK to trigger Android installer
+          await FileOpener.open({
+            filePath: downloadRes.path,
+            contentType: 'application/vnd.android.package-archive'
+          });
+        }
+      }
+    } catch (e) {
+      console.error("AutoUpdate error:", e);
+      showToast(translations[state.appLang].update_error + e.message, "error");
+    }
+  }
+
+  // Check for updates on startup with a slight delay
+  if (isAndroidApp) {
+    setTimeout(checkForAndroidUpdate, 2000);
+  }
+
 });
