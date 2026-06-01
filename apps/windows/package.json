@@ -36,6 +36,9 @@
         "zip"
       ]
     },
+    "nsis": {
+      "deleteAppDataOnUninstall": true
+    },
     "extraResources": [
       {
         "from": "../../packages/backend",

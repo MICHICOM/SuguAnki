@@ -41,6 +41,8 @@ const translations = {
     model_35_flash: "Gemini 3.5 Flash (最新・1日20回)",
     settings: "デッキ設定",
     settings_title: "アプリ設定",
+    licenses_btn: "クレジットとライセンス",
+    licenses_title: "クレジットとライセンス",
     save: "保存",
     api_key_tip: "キーはローカル環境の <code>.env</code> ファイルに安全に保存されます。",
     deck_label: "登録先デッキ (Deck)",
@@ -112,6 +114,8 @@ const translations = {
     model_35_flash: "Gemini 3.5 Flash (Latest, 20/day)",
     settings: "Deck Settings",
     settings_title: "App Settings",
+    licenses_btn: "Credits & Licenses",
+    licenses_title: "Credits & Licenses",
     save: "Save",
     api_key_tip: "The key is securely saved in your local <code>.env</code> file.",
     deck_label: "Target Deck",
@@ -235,6 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const settingsModal = document.getElementById('settings-modal');
   const openSettingsBtn = document.getElementById('open-settings-btn');
   const settingsCloseBtn = document.getElementById('settings-close-btn');
+  
+  const licensesModal = document.getElementById('licenses-modal');
+  const openLicensesBtn = document.getElementById('open-licenses-btn');
+  const licensesCloseBtn = document.getElementById('licenses-close-btn');
   
   // Toast Element
   const toast = document.getElementById('toast');
@@ -456,6 +464,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function populateDecks(decks) {
     decks = (decks || []).filter(d => d); // Filter out null/empty strings
     deckSelect.innerHTML = '';
+    
+    // Re-enable controls if they were previously disabled
+    deckSelect.disabled = false;
+    newDeckBtn.disabled = false;
+
     if (decks.length === 0) {
       const opt = document.createElement('option');
       opt.value = '';
@@ -540,6 +553,17 @@ document.addEventListener('DOMContentLoaded', () => {
   settingsCloseBtn.addEventListener('click', () => {
     settingsModal.classList.add('hide');
   });
+
+  // Licenses Modal events
+  if (openLicensesBtn && licensesModal && licensesCloseBtn) {
+    openLicensesBtn.addEventListener('click', () => {
+      licensesModal.classList.remove('hide');
+    });
+
+    licensesCloseBtn.addEventListener('click', () => {
+      licensesModal.classList.add('hide');
+    });
+  }
 
   // Generate Vocab Card Action
   vocabForm.addEventListener('submit', async (e) => {

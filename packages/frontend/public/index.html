@@ -291,6 +291,35 @@
           </button>
         </div>
       </div>
+
+      <div style="margin-top: 25px; border-top: 1px solid #45475a; padding-top: 15px;">
+        <button id="open-licenses-btn" class="btn btn-secondary btn-block" data-i18n="licenses_btn">クレジットとライセンス (Credits & Licenses)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Licenses Modal -->
+  <div id="licenses-modal" class="modal-overlay hide" style="z-index: 120;">
+    <div class="modal-content" style="max-width: 500px; max-height: 80vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 data-i18n="licenses_title">クレジットとライセンス (Credits & Licenses)</h3>
+        <button id="licenses-close-btn" class="btn btn-icon-only" style="width: 32px; height: 32px; padding: 4px; border: none; background: transparent;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      
+      <div class="license-content" style="font-size: 0.9rem; line-height: 1.5; color: #a6adc8;">
+        <h4>AnkiLLM Vocab Builder</h4>
+        <p>Copyright (c) 2026 MICHICOM</p>
+        <p>Released under the MIT License.</p>
+        
+        <h4 style="margin-top: 15px;">Third-Party Licenses</h4>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+          <li><strong>Capacitor:</strong> MIT License</li>
+          <li><strong>Google Fonts (Outfit, Plus Jakarta Sans):</strong> SIL Open Font License</li>
+        </ul>
+        <p style="margin-top: 15px;"><a href="https://github.com/MICHICOM/AnkiLLM" target="_blank" style="color: var(--accent-primary); text-decoration: none;">GitHub Repository</a></p>
+      </div>
     </div>
   </div>
 
