@@ -20,29 +20,50 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
+const http = require('http');
+
 // Helper to call AnkiConnect
 async function callAnkiConnect(action, params = {}) {
-  try {
-    const response = await fetch(ANKI_CONNECT_URL, {
+  return new Promise((resolve, reject) => {
+    const payload = JSON.stringify({ action, version: 6, params });
+    const urlObj = new URL(ANKI_CONNECT_URL);
+    
+    const options = {
+      hostname: urlObj.hostname,
+      port: urlObj.port,
+      path: urlObj.pathname,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        action,
-        version: 6,
-        params,
-      }),
+        'Content-Length': Buffer.byteLength(payload)
+      }
+    };
+
+    const req = http.request(options, (res) => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        try {
+          const data = JSON.parse(body);
+          if (data.error) {
+            reject(new Error(data.error));
+          } else {
+            resolve(data.result);
+          }
+        } catch (e) {
+          reject(new Error('Invalid JSON response from AnkiConnect'));
+        }
+      });
     });
-    const data = await response.json();
-    if (data.error) {
-      throw new Error(data.error);
-    }
-    return data.result;
-  } catch (error) {
-    console.error(`AnkiConnect Error (${action}):`, error.message);
-    throw new Error(`AnkiConnect connection failed. Please ensure Anki is running and AnkiConnect is installed. (Detail: ${error.message})`);
-  }
+
+    req.on('error', (error) => {
+      console.error(`AnkiConnect Error (${action}):`, error.message);
+      reject(new Error(`AnkiConnect connection failed. Please ensure Anki is running and AnkiConnect is installed. (Detail: ${error.message})`));
+    });
+
+    req.write(payload);
+    req.end();
+  });
 }
 
 // 1. Get configuration status
@@ -259,7 +280,21 @@ app.post('/api/anki/add', async (req, res) => {
   }
 });
 
+// 7. Generic AnkiConnect Proxy
+app.post('/api/anki/proxy', async (req, res) => {
+  const { action, params } = req.body;
+  if (!action) {
+    return res.status(400).json({ error: 'Action is required.' });
+  }
+  try {
+    const result = await callAnkiConnect(action, params);
+    res.json({ result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(PORT, '127.0.0.1', () => {
+  console.log(`Server is running at http://127.0.0.1:${PORT}`);
 });

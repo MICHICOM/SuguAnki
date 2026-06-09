@@ -373,14 +373,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else {
       try {
-        const response = await fetch(ANKI_CONNECT_URL, {
+        const response = await fetch('/api/anki/proxy', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             action,
-            version: 6,
             params,
           }),
         });
@@ -402,9 +401,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // Check Configuration & Anki Connection
   async function checkSystemStatus() {
     try {
-      // 1. Check Gemini config in localStorage
-      const savedApiKey = localStorage.getItem('anki_llm_gemini_api_key');
-      state.geminiConfigured = !!savedApiKey;
+      // 1. Check Gemini config
+      if (isAndroidApp) {
+        // Android: Check localStorage
+        const savedApiKey = localStorage.getItem('anki_llm_gemini_api_key');
+        state.geminiConfigured = !!savedApiKey;
+      } else {
+        // Windows: Check from backend
+        const configRes = await fetch('/api/config');
+        if (configRes.ok) {
+          const config = await configRes.json();
+          state.geminiConfigured = config.geminiConfigured;
+        } else {
+          state.geminiConfigured = false;
+        }
+      }
       
       updateGeminiStatusUI(state.geminiConfigured);
 
@@ -448,7 +459,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveKeyBtn.disabled = true;
     try {
-      localStorage.setItem('anki_llm_gemini_api_key', key);
+      if (isAndroidApp) {
+        // Android: Save to localStorage
+        localStorage.setItem('anki_llm_gemini_api_key', key);
+      } else {
+        // Windows: Save via backend
+        const response = await fetch('/api/config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ geminiApiKey: key })
+        });
+        
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || 'Failed to save API key');
+        }
+      }
+
       showToast(translations[state.appLang].toast_api_key_saved, 'success');
       state.geminiConfigured = true;
       updateGeminiStatusUI(true);
@@ -571,8 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const word = wordInput.value.trim();
     if (!word) return;
 
-    const apiKey = localStorage.getItem('anki_llm_gemini_api_key');
-    if (!apiKey) {
+    if (!state.geminiConfigured) {
       showToast(translations[state.appLang].toast_gemini_key_required, 'warning');
       return;
     }
@@ -588,90 +616,83 @@ document.addEventListener('DOMContentLoaded', () => {
       const sourceLang = sourceLangSelect.value;
       const targetLang = targetLangSelect.value;
       const model = modelSelect.value;
+      let parsedData = null;
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-      const prompt = `Analyze the vocabulary word: "${word}" in ${sourceLang}.
+      if (isAndroidApp) {
+        // Android: Direct fetch to Gemini API
+        const apiKey = localStorage.getItem('anki_llm_gemini_api_key');
+        if (!apiKey) throw new Error("API Key is missing from localStorage");
+        
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const prompt = `Analyze the vocabulary word: "${word}" in ${sourceLang}.
 You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
 
-      const payload = {
-        contents: [
-          {
-            parts: [
-              { text: prompt }
-            ]
+        const payload = {
+          contents: [ { parts: [ { text: prompt } ] } ],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "OBJECT",
+              properties: {
+                baseForm: { type: "STRING" },
+                gender: { type: "STRING" },
+                article: { type: "STRING" },
+                meaning: { type: "STRING" },
+                coreImage: { type: "STRING" },
+                etymology: { type: "STRING" },
+                exampleSentence: {
+                  type: "OBJECT",
+                  properties: { original: { type: "STRING" }, translation: { type: "STRING" } },
+                  required: ["original", "translation"]
+                }
+              },
+              required: ["baseForm", "gender", "article", "meaning", "coreImage", "etymology", "exampleSentence"]
+            }
           }
-        ],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              baseForm: {
-                type: "STRING",
-                description: `The dictionary base form (原型) of the word in ${sourceLang}. Use standard capitalization rules of ${sourceLang} (e.g. in German, nouns MUST start with a capital letter like 'Haus', verbs lowercase like 'gehen'; in other languages like English, lowercase). Do NOT include the article in this field.`
-              },
-              gender: {
-                type: "STRING",
-                description: "The grammatical gender of the word if applicable ('masculine', 'feminine', 'neuter', or 'none')."
-              },
-              article: {
-                type: "STRING",
-                description: `The default singular definite article commonly learned with this word in ${sourceLang} (e.g., 'der', 'die', 'das' for German; 'le', 'la' for French; 'el', 'la' for Spanish). Leave empty if not applicable or not a noun.`
-              },
-              meaning: {
-                type: "STRING",
-                description: `Concise meaning(s) (意味) of the word in ${targetLang}.`
-              },
-              coreImage: {
-                type: "STRING",
-                description: `The core image (コアイメージ), essential nuance, or visual/mental image of the word in ${targetLang}. Explain the fundamental concept.`
-              },
-              etymology: {
-                type: "STRING",
-                description: `Detailed etymology (語源) or word origin of the word in ${targetLang}. Explain prefix, roots, suffixes, or origin. Do NOT return just a single character, parenthesis, or symbol.`
-              },
-              exampleSentence: {
-                type: "OBJECT",
-                properties: {
-                  original: {
-                    type: "STRING",
-                    description: `A natural example sentence in the source language (${sourceLang}) demonstrating the word's usage.`
-                  },
-                  translation: {
-                    type: "STRING",
-                    description: `Translation of the example sentence in the target language (${targetLang}).`
-                  }
-                },
-                required: ["original", "translation"]
-              }
-            },
-            required: ["baseForm", "gender", "article", "meaning", "coreImage", "etymology", "exampleSentence"]
-          }
+        };
+
+        const response = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`Gemini API returned HTTP ${response.status}: ${errText}`);
         }
-      };
 
-      const response = await fetch(geminiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+        const resData = await response.json();
+        if (!resData.candidates || resData.candidates.length === 0 || !resData.candidates[0].content || !resData.candidates[0].content.parts || resData.candidates[0].content.parts.length === 0) {
+          throw new Error('Invalid response structure from Gemini API');
+        }
 
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Gemini API returned HTTP ${response.status}: ${errText}`);
+        const textResponse = resData.candidates[0].content.parts[0].text;
+        parsedData = JSON.parse(textResponse);
+      } else {
+        // Windows: Use local backend proxy
+        const payload = {
+          word,
+          sourceLang,
+          targetLang,
+          model
+        };
+
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errJson = await response.json().catch(() => ({}));
+          throw new Error(errJson.error || `Server returned HTTP ${response.status}`);
+        }
+
+        parsedData = await response.json();
       }
-
-      const resData = await response.json();
-      
-      if (!resData.candidates || resData.candidates.length === 0 || !resData.candidates[0].content || !resData.candidates[0].content.parts || resData.candidates[0].content.parts.length === 0) {
-        throw new Error('Invalid response structure from Gemini API');
-      }
-
-      const textResponse = resData.candidates[0].content.parts[0].text;
-      const parsedData = JSON.parse(textResponse);
 
       state.currentData = parsedData;
       showToast(translations[state.appLang].toast_gen_complete, 'success');
@@ -752,22 +773,43 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
     const frontText = generateFrontHtml(state.currentData);
     const backHtml = generateBackHtml(state.currentData);
 
-    const noteParams = {
-      note: {
-        deckName,
-        modelName: 'Basic',
-        fields: {
-          Front: frontText,
-          Back: backHtml
-        },
-        options: {
-          allowDuplicate: false,
-        },
-        tags: ['AnkiLLM']
-      }
-    };
-
     try {
+      // Always use AnkiLLM Basic by default
+      let targetModel = 'AnkiLLM Basic';
+      let targetFields = { front: 'Front', back: 'Back' };
+
+      const models = await callAnkiConnect('modelNames');
+      if (!models || !models.includes(targetModel)) {
+        await callAnkiConnect('createModel', {
+          modelName: targetModel,
+          inOrderFields: ["Front", "Back"],
+          css: ".card {\n font-family: arial;\n font-size: 20px;\n text-align: center;\n color: black;\n background-color: white;\n}\n",
+          isCloze: false,
+          cardTemplates: [
+            {
+              Name: "Card 1",
+              Front: "{{Front}}",
+              Back: "{{FrontSide}}\n<hr id=answer>\n{{Back}}"
+            }
+          ]
+        });
+      }
+
+      const noteParams = {
+        note: {
+          deckName,
+          modelName: targetModel,
+          fields: {
+            [targetFields.front]: frontText,
+            [targetFields.back]: backHtml
+          },
+          options: {
+            allowDuplicate: false,
+          },
+          tags: ['AnkiLLM']
+        }
+      };
+
       const res = await callAnkiConnect('addNote', noteParams);
       
       if (res && res.result === null) {
