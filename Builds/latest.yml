@@ -1,0 +1,8 @@
+version: 1.0.1
+files:
+  - url: AnkiLLM-Setup-1.0.1.exe
+    sha512: hBfPCIBJJ66ABS9c+56igdS5o1GSxA6AmqXEAcG/X65zZF+Z1Wnz7vwq2bAfqfBLPiTuMjSBQ+1CdkhPz0RQJg==
+    size: 77759893
+path: AnkiLLM-Setup-1.0.1.exe
+sha512: hBfPCIBJJ66ABS9c+56igdS5o1GSxA6AmqXEAcG/X65zZF+Z1Wnz7vwq2bAfqfBLPiTuMjSBQ+1CdkhPz0RQJg==
+releaseDate: '2026-06-12T14:41:39.495Z'

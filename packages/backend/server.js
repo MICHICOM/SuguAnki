@@ -143,7 +143,7 @@ app.post('/api/anki/create-deck', async (req, res) => {
 
 // 5. Generate Vocabulary Details with Gemini
 app.post('/api/generate', async (req, res) => {
-  const { word, sourceLang = 'English', targetLang = 'Japanese', model = 'gemini-2.5-flash' } = req.body;
+  const { word, sourceLang = 'English', targetLang = 'Japanese', model = 'gemini-2.5-flash', customFieldsList = [] } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -159,8 +159,80 @@ app.post('/api/generate', async (req, res) => {
 
   const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
 
-  const prompt = `Analyze the vocabulary word: "${word.trim()}" in ${sourceLang}.
-You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+  let prompt = `Analyze the vocabulary word: "${word.trim()}" in ${sourceLang}.
+You must return the dictionary base form (原型) of the word in ${sourceLang}, its part of speech (品詞) in ${sourceLang}, its pronunciation (発音記号) in IPA format, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}. If the word has conjugations, declensions, or plural forms, provide an HTML table showing them.`;
+
+  const properties = {
+    baseForm: {
+      type: "STRING",
+      description: `The dictionary base form (原型) of the word in ${sourceLang}. Use standard capitalization rules of ${sourceLang} (e.g. in German, nouns MUST start with a capital letter like 'Haus', verbs lowercase like 'gehen'; in other languages like English, lowercase). Do NOT include the article in this field.`
+    },
+    partOfSpeech: {
+      type: "STRING",
+      description: `The part of speech (品詞) of the word in ${sourceLang} (e.g., if ${sourceLang} is German, use Substantiv, Verb, etc.).`
+    },
+    pronunciation: {
+      type: "STRING",
+      description: `The standard IPA pronunciation (発音記号) of the word in ${sourceLang}.`
+    },
+    gender: {
+      type: "STRING",
+      description: "The grammatical gender of the word if applicable ('masculine', 'feminine', 'neuter', or 'none')."
+    },
+    article: {
+      type: "STRING",
+      description: `The default singular definite article commonly learned with this word in ${sourceLang} (e.g., 'der', 'die', 'das' for German; 'le', 'la' for French; 'el', 'la' for Spanish). Leave empty if not applicable or not a noun.`
+    },
+    meaning: {
+      type: "STRING",
+      description: `Concise meaning(s) (意味) of the word in ${targetLang}.`
+    },
+    coreImage: {
+      type: "STRING",
+      description: `The core image (コアイメージ), essential nuance, or visual/mental image of the word in ${targetLang}. Explain the fundamental concept.`
+    },
+    etymology: {
+      type: "STRING",
+      description: `Detailed etymology (語源) or word origin of the word in ${targetLang}. Explain prefix, roots, suffixes, or origin. Do NOT return just a single character, parenthesis, or symbol.`
+    },
+    inflectionTable: {
+      type: "STRING",
+      description: `If the word has conjugations, declensions, or plural forms, provide a simple HTML table showing them. Otherwise return an empty string.`
+    },
+    exampleSentence: {
+      type: "OBJECT",
+      properties: {
+        original: {
+          type: "STRING",
+          description: `A natural example sentence in the source language (${sourceLang}) demonstrating the word's usage.`
+        },
+        translation: {
+          type: "STRING",
+          description: `Translation of the example sentence in the target language (${targetLang}).`
+        }
+      },
+      required: ["original", "translation"]
+    }
+  };
+
+  const required = ["baseForm", "partOfSpeech", "pronunciation", "gender", "article", "meaning", "coreImage", "etymology", "inflectionTable", "exampleSentence"];
+
+  if (customFieldsList && customFieldsList.length > 0) {
+    prompt += `\nAdditionally, please extract and provide values for the following custom fields: ${customFieldsList.join(", ")}. IMPORTANT: If a field is not applicable to the word (e.g., past tense for a noun), you MUST return an empty string ("") as the value.`;
+    properties.customFields = {
+      type: "ARRAY",
+      description: "Array of requested custom field values.",
+      items: {
+        type: "OBJECT",
+        properties: {
+          fieldName: { type: "STRING", description: "Name of the requested custom field" },
+          value: { type: "STRING", description: `The value for the requested custom field in ${sourceLang} or ${targetLang} as appropriate. Leave as empty string "" if not applicable.` }
+        },
+        required: ["fieldName", "value"]
+      }
+    };
+    required.push("customFields");
+  }
 
   const payload = {
     contents: [
@@ -174,47 +246,8 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
       responseMimeType: "application/json",
       responseSchema: {
         type: "OBJECT",
-        properties: {
-          baseForm: {
-            type: "STRING",
-            description: `The dictionary base form (原型) of the word in ${sourceLang}. Use standard capitalization rules of ${sourceLang} (e.g. in German, nouns MUST start with a capital letter like 'Haus', verbs lowercase like 'gehen'; in other languages like English, lowercase). Do NOT include the article in this field.`
-          },
-          gender: {
-            type: "STRING",
-            description: "The grammatical gender of the word if applicable ('masculine', 'feminine', 'neuter', or 'none')."
-          },
-          article: {
-            type: "STRING",
-            description: `The default singular definite article commonly learned with this word in ${sourceLang} (e.g., 'der', 'die', 'das' for German; 'le', 'la' for French; 'el', 'la' for Spanish). Leave empty if not applicable or not a noun.`
-          },
-          meaning: {
-            type: "STRING",
-            description: `Concise meaning(s) (意味) of the word in ${targetLang}.`
-          },
-          coreImage: {
-            type: "STRING",
-            description: `The core image (コアイメージ), essential nuance, or visual/mental image of the word in ${targetLang}. Explain the fundamental concept.`
-          },
-          etymology: {
-            type: "STRING",
-            description: `Detailed etymology (語源) or word origin of the word in ${targetLang}. Explain prefix, roots, suffixes, or origin. Do NOT return just a single character, parenthesis, or symbol.`
-          },
-          exampleSentence: {
-            type: "OBJECT",
-            properties: {
-              original: {
-                type: "STRING",
-                description: `A natural example sentence in the source language (${sourceLang}) demonstrating the word's usage.`
-              },
-              translation: {
-                type: "STRING",
-                description: `Translation of the example sentence in the target language (${targetLang}).`
-              }
-            },
-            required: ["original", "translation"]
-          }
-        },
-        required: ["baseForm", "gender", "article", "meaning", "coreImage", "etymology", "exampleSentence"]
+        properties,
+        required
       }
     }
   };

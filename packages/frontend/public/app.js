@@ -53,8 +53,8 @@ const translations = {
     explain_label: "説明の言語",
     word_label: "単語を入力",
     word_placeholder: "例: ephemeral, Haus, éphémère",
-    generate_btn: "AIでカード情報を生成",
-    generating: "AIで生成中...",
+    generate_btn: "カードを作る",
+    generating: "生成中...",
     recent_title: "最近追加した単語",
     recent_empty: "このセッションで追加されたカードはありません",
     preview_title: "生成プレビュー",
@@ -62,6 +62,9 @@ const translations = {
     tab_front: "表面 (Front)",
     tab_back: "裏面 (Back)",
     tab_details: "詳細データ",
+    tab_general: "一般",
+    tab_env: "環境設定",
+    tab_ext: "拡張機能",
     preview_front_tag: "Anki 表面プレビュー",
     preview_back_tag: "Anki 裏面プレビュー",
     field_base: "原型 (Base Form)",
@@ -77,7 +80,7 @@ const translations = {
     field_example_org: "例文 [学習言語] (Example Original)",
     field_example_tr: "例文 [説明言語] (Example Translation)",
     edit_tip: "💡 登録前にデータを微調整できます。調整した内容は「裏面プレビュー」に即時反映されます。",
-    register_btn: "このカードをAnkiに登録",
+    register_btn: "カードを登録する",
     new_deck_title: "新しいデッキの作成",
     new_deck_desc: "作成するデッキ名を入力してください（ネストする階層は \"English::Vocab\" のようにコロン2つで区切って指定できます）。",
     cancel: "キャンセル",
@@ -103,7 +106,16 @@ const translations = {
     update_downloading: "アップデートのダウンロードを開始します...",
     update_ready: "ダウンロード完了。インストールを開始します...",
     update_plugin_error: "必要なプラグインがロードされていません",
-    update_error: "アップデートの確認・処理中にエラーが発生しました: "
+    update_error: "アップデートの確認・処理中にエラーが発生しました: ",
+    field_pos: "品詞 (Part of Speech)",
+    field_pronunciation: "発音記号 (Pronunciation)",
+    generate_custom_fields: "カスタムフィールドを生成する (消費トークン↑)",
+    custom_fields_setting_title: "カスタムフィールド",
+    custom_fields_setting_desc: "ここで設定した項目をAIが抽出します",
+    save_cf_btn: "フィールド設定を保存",
+    app_theme_label: "アプリテーマ",
+    card_theme_label: "カード出力用CSS",
+    add_cf_btn: "追加"
   },
   en: {
     app_lang_label: "System Language",
@@ -126,8 +138,8 @@ const translations = {
     explain_label: "Explanation Language",
     word_label: "Enter Word",
     word_placeholder: "e.g., ephemeral, Haus, éphémère",
-    generate_btn: "Generate Card Info with AI",
-    generating: "Generating with AI...",
+    generate_btn: "Generate",
+    generating: "Generating...",
     recent_title: "Recently Added",
     recent_empty: "No cards added in this session",
     preview_title: "Generation Preview",
@@ -135,6 +147,9 @@ const translations = {
     tab_front: "Front",
     tab_back: "Back",
     tab_details: "Detail Data",
+    tab_general: "General",
+    tab_env: "Preferences",
+    tab_ext: "Extensions",
     preview_front_tag: "Anki Front Preview",
     preview_back_tag: "Anki Back Preview",
     field_base: "Base Form",
@@ -142,7 +157,7 @@ const translations = {
     field_gender: "Gender",
     gender_none: "None",
     gender_masc: "Masculine",
-    gender_fem: "Feminine",
+    gender_fem: "Female",
     gender_neuter: "Neuter",
     field_meaning: "Meaning",
     field_core: "Core Image",
@@ -150,13 +165,13 @@ const translations = {
     field_example_org: "Example (Original)",
     field_example_tr: "Example (Translation)",
     edit_tip: "💡 You can fine-tune the data before adding. Changes reflect instantly on the Back preview.",
-    register_btn: "Register Card to Anki",
+    register_btn: "Add to Deck",
     new_deck_title: "Create New Deck",
     new_deck_desc: "Enter a name for the new deck (you can nest decks using double colons like \"English::Vocab\").",
     cancel: "Cancel",
     create: "Create",
     status_connected: "Connected",
-    status_disconnected: "Offline",
+    status_disconnected: "Disconnected",
     status_configured: "Configured",
     status_missing: "Not Set",
     status_connected_desc: "Connected to AnkiConnect",
@@ -176,8 +191,33 @@ const translations = {
     update_downloading: "Downloading update...",
     update_ready: "Download complete. Starting installation...",
     update_plugin_error: "Required plugins are not loaded.",
-    update_error: "An error occurred during the update process: "
+    update_error: "An error occurred during the update process: ",
+    field_pos: "Part of Speech",
+    field_pronunciation: "Pronunciation",
+    generate_custom_fields: "Generate Custom Fields (Token↑)",
+    custom_fields_setting_title: "Custom Fields",
+    custom_fields_setting_desc: "The AI will extract these items",
+    save_cf_btn: "Save Custom Fields",
+    app_theme_label: "App Theme",
+    card_theme_label: "Card Theme CSS",
+    add_cf_btn: "Add"
   }
+};
+
+// --- Hardcoded Anki Card Subtitles per Target Language ---
+const cardSubtitles = {
+  Japanese: { meaning: "意味", coreImage: "コアイメージ", etymology: "語源", example: "例文", inflectionTable: "活用・変化表" },
+  English: { meaning: "Meaning", coreImage: "Core Image", etymology: "Etymology", example: "Example", inflectionTable: "Inflection Table" },
+  German: { meaning: "Bedeutung", coreImage: "Kernbild", etymology: "Etymologie", example: "Beispiel", inflectionTable: "Deklination / Konjugation" },
+  French: { meaning: "Signification", coreImage: "Image centrale", etymology: "Étymologie", example: "Exemple", inflectionTable: "Conjugaison / Déclinaison" },
+  Spanish: { meaning: "Significado", coreImage: "Imagen central", etymology: "Etimología", example: "Ejemplo", inflectionTable: "Conjugación / Declinación" },
+  Italian: { meaning: "Significato", coreImage: "Immagine centrale", etymology: "Etimologia", example: "Esempio", inflectionTable: "Coniugazione / Declinazione" },
+  Chinese: { meaning: "含义", coreImage: "核心意象", etymology: "词源", example: "例句", inflectionTable: "词形变化" },
+  Korean: { meaning: "의미", coreImage: "핵심 이미지", etymology: "어원", example: "예문", inflectionTable: "활용표" },
+  Russian: { meaning: "Значение", coreImage: "Ключевой образ", etymology: "Этимология", example: "Пример", inflectionTable: "Склонение / Спряжение" },
+  Portuguese: { meaning: "Significado", coreImage: "Imagem central", etymology: "Etimologia", example: "Exemplo", inflectionTable: "Conjugação / Declinação" },
+  Dutch: { meaning: "Betekenis", coreImage: "Kernbeeld", etymology: "Etymologie", example: "Voorbeeld", inflectionTable: "Verbuiging / Vervoeging" },
+  Arabic: { meaning: "المعنى", coreImage: "الصورة الأساسية", etymology: "أصل الكلمة", example: "مثال", inflectionTable: "جدول التصريف" }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -199,9 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveKeyBtn = document.getElementById('save-key-btn');
   const sourceLangSelect = document.getElementById('source-lang-select');
   const targetLangSelect = document.getElementById('target-lang-select');
+  const swapLangBtn = document.getElementById('swap-lang-btn');
   const deckSelect = document.getElementById('deck-select');
   const newDeckBtn = document.getElementById('new-deck-btn');
   const modelSelect = document.getElementById('model-select');
+  const appThemeSelect = document.getElementById('app-theme-select');
+  const cardThemeSelect = document.getElementById('card-theme-select');
   
   const vocabForm = document.getElementById('vocab-form');
   const wordInput = document.getElementById('word-input');
@@ -219,14 +262,23 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Field Editor inputs
   const fieldBaseForm = document.getElementById('field-base-form');
+  const fieldPos = document.getElementById('field-pos');
   const fieldArticle = document.getElementById('field-article');
   const fieldGender = document.getElementById('field-gender');
   const fieldMeaning = document.getElementById('field-meaning');
+  const fieldPronunciation = document.getElementById('field-pronunciation');
+  const customFieldsContainer = document.getElementById('custom-fields-container');
   const fieldCoreImage = document.getElementById('field-core-image');
   const fieldEtymology = document.getElementById('field-etymology');
   const fieldExampleEn = document.getElementById('field-example-en');
   const fieldExampleJa = document.getElementById('field-example-ja');
   
+  const generateCustomFieldsCb = document.getElementById('generate-custom-fields-cb');
+  const cfLangSelect = document.getElementById('cf-lang-select');
+  const cfDynamicList = document.getElementById('cf-dynamic-list');
+  const addCfFieldBtn = document.getElementById('add-cf-field-btn');
+  const saveCfBtn = document.getElementById('save-cf-btn');
+
   const addToAnkiBtn = document.getElementById('add-to-anki-btn');
   const recentList = document.getElementById('recent-list');
   
@@ -252,7 +304,17 @@ document.addEventListener('DOMContentLoaded', () => {
   applyLanguage(state.appLang);
 
   // Initialize Status checks with a short delay for Capacitor
-  setTimeout(checkSystemStatus, 500);
+  checkSystemStatus();
+
+  // Re-check Anki connection when window gains or loses focus if disconnected
+  const handleWindowFocusBlur = () => {
+    if (!state.ankiConnected) {
+      checkSystemStatus();
+    }
+  };
+  window.addEventListener('focus', handleWindowFocusBlur);
+  window.addEventListener('blur', handleWindowFocusBlur);
+
   renderRecentCards();
 
   // Restore language selections
@@ -278,6 +340,124 @@ document.addEventListener('DOMContentLoaded', () => {
   modelSelect.addEventListener('change', () => {
     localStorage.setItem('anki_llm_model', modelSelect.value);
   });
+
+  const savedAppTheme = localStorage.getItem('anki_llm_app_theme') || 'default';
+  if (appThemeSelect && Array.from(appThemeSelect.options).some(o => o.value === savedAppTheme)) {
+    appThemeSelect.value = savedAppTheme;
+  }
+  document.documentElement.setAttribute('data-theme', savedAppTheme);
+
+  const savedCardTheme = localStorage.getItem('anki_llm_card_theme') || 'default';
+  if (cardThemeSelect && Array.from(cardThemeSelect.options).some(o => o.value === savedCardTheme)) {
+    cardThemeSelect.value = savedCardTheme;
+  }
+
+  if (appThemeSelect) {
+    appThemeSelect.addEventListener('change', () => {
+      const theme = appThemeSelect.value;
+      localStorage.setItem('anki_llm_app_theme', theme);
+      document.documentElement.setAttribute('data-theme', theme);
+      updateThemePreviews();
+    });
+  }
+
+  if (cardThemeSelect) {
+    cardThemeSelect.addEventListener('change', () => {
+      localStorage.setItem('anki_llm_card_theme', cardThemeSelect.value);
+      updateThemePreviews();
+      if (state.currentData) {
+        updatePreview(state.currentData);
+      }
+    });
+  }
+
+  const appColors = {
+    'default': ['#2f2f31', '#3a3a3c', '#59adeb'],
+    'modern-dark': ['#0a0a12', '#1a1a2e', '#6366f1'],
+    'nord': ['#2e3440', '#3b4252', '#88c0d0'],
+    'dracula': ['#282a36', '#44475a', '#ff79c6'],
+    'light': ['#f8fafc', '#ffffff', '#3b82f6']
+  };
+
+  const cardColors = {
+    'default': ['#3a3a3c', '#59adeb', '#e25d5d', '#50b050'],
+    'modern-dark': ['#1e1e2e', '#89b4fa', '#f38ba8', '#a6e3a1'],
+    'modern-light': ['#ffffff', '#1e3a8a', '#9d174d', '#065f46'],
+    'nord-dark': ['#3b4252', '#81a1c1', '#b48ead', '#a3be8c']
+  };
+
+  function makeCustomSelect(selectElement, colorsMap) {
+    if (!selectElement) return;
+    
+    selectElement.style.display = 'none';
+    
+    const wrapper = document.createElement('div');
+    wrapper.className = 'custom-select-wrapper';
+    
+    const display = document.createElement('div');
+    display.className = 'custom-select-display';
+    
+    const optionsList = document.createElement('div');
+    optionsList.className = 'custom-select-options hide';
+    
+    Array.from(selectElement.options).forEach(opt => {
+      const item = document.createElement('div');
+      item.className = 'custom-select-option';
+      item.dataset.value = opt.value;
+      
+      const colors = colorsMap[opt.value] || [];
+      const swatchesHtml = colors.map(c => `<div class="mini-swatch" style="background: ${c};" title="${c}"></div>`).join('');
+      
+      item.innerHTML = `<span>${opt.text}</span><div class="swatches-container">${swatchesHtml}</div>`;
+      
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectElement.value = opt.value;
+        updateDisplay();
+        optionsList.classList.add('hide');
+        selectElement.dispatchEvent(new Event('change'));
+      });
+      optionsList.appendChild(item);
+    });
+
+    function updateDisplay() {
+      const opt = selectElement.options[selectElement.selectedIndex];
+      if (!opt) return;
+      const colors = colorsMap[opt.value] || [];
+      const swatchesHtml = colors.map(c => `<div class="mini-swatch" style="background: ${c};" title="${c}"></div>`).join('');
+      display.innerHTML = `<span>${opt.text}</span><div class="swatches-container">${swatchesHtml}</div>`;
+    }
+
+    display.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = optionsList.classList.contains('hide');
+      document.querySelectorAll('.custom-select-options').forEach(el => el.classList.add('hide'));
+      if (isHidden) optionsList.classList.remove('hide');
+    });
+
+    document.addEventListener('click', () => {
+      optionsList.classList.add('hide');
+    });
+
+    updateDisplay();
+    wrapper.appendChild(display);
+    wrapper.appendChild(optionsList);
+    selectElement.parentNode.insertBefore(wrapper, selectElement.nextSibling);
+  }
+
+  // Initialize custom selects
+  makeCustomSelect(appThemeSelect, appColors);
+  makeCustomSelect(cardThemeSelect, cardColors);
+
+  if (swapLangBtn) {
+    swapLangBtn.addEventListener('click', () => {
+      const temp = sourceLangSelect.value;
+      sourceLangSelect.value = targetLangSelect.value;
+      targetLangSelect.value = temp;
+      localStorage.setItem('anki_llm_source_lang', sourceLangSelect.value);
+      localStorage.setItem('anki_llm_target_lang', targetLangSelect.value);
+    });
+  }
 
   // --- Translation Engine ---
   function applyLanguage(lang) {
@@ -318,6 +498,18 @@ document.addEventListener('DOMContentLoaded', () => {
           opt.textContent = languageNames[lang][val];
         }
       });
+      
+      if (cfLangSelect) {
+        const currentCfLang = cfLangSelect.value;
+        cfLangSelect.innerHTML = '';
+        Array.from(sourceLangSelect.options).forEach(opt => {
+          const newOpt = document.createElement('option');
+          newOpt.value = opt.value;
+          newOpt.textContent = opt.textContent;
+          cfLangSelect.appendChild(newOpt);
+        });
+        if (currentCfLang) cfLangSelect.value = currentCfLang;
+      }
       
       sourceLangSelect.value = currentSource;
       targetLangSelect.value = currentTarget;
@@ -594,6 +786,100 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Custom Fields Settings Logic
+  function getCustomFieldsConfig() {
+    return JSON.parse(localStorage.getItem('anki_llm_custom_fields_config') || '{}');
+  }
+
+  function renderCustomFieldsList(fields) {
+    if (!cfDynamicList) return;
+    cfDynamicList.innerHTML = '';
+    if (!fields || fields.length === 0) {
+      fields = [''];
+    }
+    fields.forEach((val) => {
+      addCustomFieldInput(val);
+    });
+  }
+
+  function addCustomFieldInput(val = '') {
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.gap = '4px';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = val;
+    input.placeholder = '例: Past Tense';
+    input.className = 'cf-item-input';
+    input.style.flex = '1';
+
+    const rmBtn = document.createElement('button');
+    rmBtn.className = 'btn btn-icon-only';
+    rmBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    rmBtn.style.width = '32px';
+    rmBtn.style.padding = '0';
+    rmBtn.style.background = 'rgba(255,0,0,0.1)';
+    rmBtn.style.color = '#f38ba8';
+    rmBtn.onclick = () => {
+      div.remove();
+    };
+
+    div.appendChild(input);
+    div.appendChild(rmBtn);
+    cfDynamicList.appendChild(div);
+  }
+
+  if (addCfFieldBtn) {
+    addCfFieldBtn.addEventListener('click', () => {
+      addCustomFieldInput('');
+    });
+  }
+
+  function loadCustomFieldsForLang(langValue) {
+    const config = getCustomFieldsConfig();
+    const valString = config[langValue] || '';
+    const fields = valString ? valString.split(',').map(s => s.trim()).filter(s => s) : [];
+    renderCustomFieldsList(fields);
+  }
+
+  if (cfLangSelect) {
+    cfLangSelect.addEventListener('change', () => {
+      loadCustomFieldsForLang(cfLangSelect.value);
+    });
+  }
+
+  if (saveCfBtn) {
+    saveCfBtn.addEventListener('click', () => {
+      const langValue = cfLangSelect.value;
+      const inputs = cfDynamicList.querySelectorAll('.cf-item-input');
+      const vals = [];
+      inputs.forEach(input => {
+        const v = input.value.trim();
+        // remove commas from input to avoid breaking the serialization format
+        if (v) vals.push(v.replace(/,/g, ''));
+      });
+      const valString = vals.join(',');
+      const config = getCustomFieldsConfig();
+      if (valString) {
+        config[langValue] = valString;
+      } else {
+        delete config[langValue];
+      }
+      localStorage.setItem('anki_llm_custom_fields_config', JSON.stringify(config));
+      showToast("カスタムフィールド設定を保存しました", "success");
+    });
+  }
+
+  // Initialize and persist Custom Fields toggle
+  const enableCustomFields = localStorage.getItem('anki_llm_enable_custom_fields') === 'true';
+  if (generateCustomFieldsCb) {
+    generateCustomFieldsCb.checked = enableCustomFields;
+    generateCustomFieldsCb.addEventListener('change', (e) => {
+      localStorage.setItem('anki_llm_enable_custom_fields', e.target.checked);
+    });
+  }
+
   // Generate Vocab Card Action
   vocabForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -618,14 +904,58 @@ document.addEventListener('DOMContentLoaded', () => {
       const model = modelSelect.value;
       let parsedData = null;
 
+      const includeCustomFields = generateCustomFieldsCb.checked;
+      let customFieldsList = [];
+      if (includeCustomFields) {
+        const config = getCustomFieldsConfig();
+        if (config[sourceLang]) {
+          customFieldsList = config[sourceLang].split(',').map(s => s.trim()).filter(s => s);
+        }
+      }
+
       if (isAndroidApp) {
         // Android: Direct fetch to Gemini API
         const apiKey = localStorage.getItem('anki_llm_gemini_api_key');
         if (!apiKey) throw new Error("API Key is missing from localStorage");
         
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-        const prompt = `Analyze the vocabulary word: "${word}" in ${sourceLang}.
-You must return the dictionary base form (原型) of the word in ${sourceLang}, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+        let prompt = `Analyze the vocabulary word: "${word}" in ${sourceLang}.
+You must return the dictionary base form (原型) of the word in ${sourceLang}, its part of speech (品詞) in ${sourceLang}, its pronunciation (発音記号) in IPA format, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+
+        const properties = {
+          baseForm: { type: "STRING" },
+          partOfSpeech: { type: "STRING", description: `The part of speech in ${sourceLang} (e.g., if German, use Substantiv).` },
+          pronunciation: { type: "STRING" },
+          gender: { type: "STRING" },
+          article: { type: "STRING" },
+          meaning: { type: "STRING" },
+          coreImage: { type: "STRING" },
+          etymology: { type: "STRING" },
+          inflectionTable: { type: "STRING" },
+          exampleSentence: {
+            type: "OBJECT",
+            properties: { original: { type: "STRING" }, translation: { type: "STRING" } },
+            required: ["original", "translation"]
+          }
+        };
+
+        const required = ["baseForm", "partOfSpeech", "pronunciation", "gender", "article", "meaning", "coreImage", "etymology", "inflectionTable", "exampleSentence"];
+
+        if (customFieldsList.length > 0) {
+          prompt += `\nAdditionally, please extract and provide values for the following custom fields: ${customFieldsList.join(", ")}. IMPORTANT: If a field is not applicable to the word (e.g., past tense for a noun), you MUST return an empty string ("") as the value.`;
+          properties.customFields = {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                fieldName: { type: "STRING" },
+                value: { type: "STRING", description: "Leave as empty string if not applicable." }
+              },
+              required: ["fieldName", "value"]
+            }
+          };
+          required.push("customFields");
+        }
 
         const payload = {
           contents: [ { parts: [ { text: prompt } ] } ],
@@ -633,20 +963,8 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
             responseMimeType: "application/json",
             responseSchema: {
               type: "OBJECT",
-              properties: {
-                baseForm: { type: "STRING" },
-                gender: { type: "STRING" },
-                article: { type: "STRING" },
-                meaning: { type: "STRING" },
-                coreImage: { type: "STRING" },
-                etymology: { type: "STRING" },
-                exampleSentence: {
-                  type: "OBJECT",
-                  properties: { original: { type: "STRING" }, translation: { type: "STRING" } },
-                  required: ["original", "translation"]
-                }
-              },
-              required: ["baseForm", "gender", "article", "meaning", "coreImage", "etymology", "exampleSentence"]
+              properties,
+              required
             }
           }
         };
@@ -675,7 +993,8 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
           word,
           sourceLang,
           targetLang,
-          model
+          model,
+          customFieldsList
         };
 
         const response = await fetch('/api/generate', {
@@ -715,6 +1034,8 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
   // Populate Input Fields
   function populateFieldsEditor(data) {
     fieldBaseForm.value = data.baseForm;
+    fieldPos.value = data.partOfSpeech || '';
+    fieldPronunciation.value = data.pronunciation || '';
     fieldArticle.value = data.article || '';
     fieldGender.value = data.gender || 'none';
     fieldMeaning.value = data.meaning;
@@ -722,6 +1043,32 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
     fieldEtymology.value = data.etymology || '';
     fieldExampleEn.value = data.exampleSentence.original;
     fieldExampleJa.value = data.exampleSentence.translation;
+
+    customFieldsContainer.innerHTML = '';
+    if (data.customFields && Array.isArray(data.customFields)) {
+      data.customFields.forEach((cf, index) => {
+        const div = document.createElement('div');
+        div.className = 'field-item';
+        const span = document.createElement('span');
+        span.className = 'field-name';
+        span.textContent = cf.fieldName;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = cf.value;
+        input.dataset.index = index;
+
+        input.addEventListener('input', (e) => {
+          if (state.currentData && state.currentData.customFields) {
+            state.currentData.customFields[e.target.dataset.index].value = e.target.value;
+            updatePreview(state.currentData);
+          }
+        });
+
+        div.appendChild(span);
+        div.appendChild(input);
+        customFieldsContainer.appendChild(div);
+      });
+    }
   }
 
   // Update visual card previews based on values
@@ -731,7 +1078,7 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
   }
 
   // Watch Field Editor changes to dynamically update preview
-  const liveInputs = [fieldBaseForm, fieldArticle, fieldGender, fieldMeaning, fieldCoreImage, fieldEtymology, fieldExampleEn, fieldExampleJa];
+  const liveInputs = [fieldBaseForm, fieldPos, fieldPronunciation, fieldArticle, fieldGender, fieldMeaning, fieldCoreImage, fieldEtymology, fieldExampleEn, fieldExampleJa];
   liveInputs.forEach(input => {
     const eventName = input.tagName === 'SELECT' ? 'change' : 'input';
     input.addEventListener(eventName, () => {
@@ -739,6 +1086,8 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
 
       // Update state data from fields
       state.currentData.baseForm = fieldBaseForm.value;
+      state.currentData.partOfSpeech = fieldPos.value;
+      state.currentData.pronunciation = fieldPronunciation.value;
       state.currentData.article = fieldArticle.value;
       state.currentData.gender = fieldGender.value;
       state.currentData.meaning = fieldMeaning.value;
@@ -865,20 +1214,59 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
     return escaped;
   }
 
-  // Construct card Front HTML for Anki
-  function generateFrontHtml(data) {
-    const showArticle = data.article && data.article.trim() !== '';
-    const genderClass = data.gender && data.gender !== 'none' ? `gender-${data.gender}` : '';
-    
+  // Get CSS for Anki Card based on theme
+  function getCardCss() {
+    const theme = localStorage.getItem('anki_llm_card_theme') || 'modern-dark';
+    let bgCol, txtCol, borderCol, accent1, bgAcc1, accent2, bgAcc2, accent3, bgAcc3, accent4, bgAcc4, labelCol;
+
+    if (theme === 'modern-light') {
+      bgCol = '#ffffff'; txtCol = '#1e293b'; borderCol = '#e2e8f0'; labelCol = '#64748b';
+      accent1 = '#1e3a8a'; bgAcc1 = '#eff6ff'; // Blue
+      accent2 = '#9d174d'; bgAcc2 = '#fdf2f8'; // Pink
+      accent3 = '#065f46'; bgAcc3 = '#ecfdf5'; // Green
+      accent4 = '#7c3aed'; bgAcc4 = '#f5f3ff'; // Purple
+    } else if (theme === 'nord-dark') {
+      bgCol = '#3b4252'; txtCol = '#eceff4'; borderCol = '#4c566a'; labelCol = '#d8dee9';
+      accent1 = '#81a1c1'; bgAcc1 = 'rgba(129, 161, 193, 0.15)'; // Blue
+      accent2 = '#b48ead'; bgAcc2 = 'rgba(180, 142, 173, 0.15)'; // Purple/Pink
+      accent3 = '#a3be8c'; bgAcc3 = 'rgba(163, 190, 140, 0.15)'; // Green
+      accent4 = '#ebcb8b'; bgAcc4 = 'rgba(235, 203, 139, 0.15)'; // Yellow
+    } else if (theme === 'modern-dark') {
+      bgCol = '#1e1e2e'; txtCol = '#cdd6f4'; borderCol = '#313244'; labelCol = '#a6adc8';
+      accent1 = '#89b4fa'; bgAcc1 = 'rgba(137, 180, 250, 0.15)';
+      accent2 = '#f38ba8'; bgAcc2 = 'rgba(243, 139, 168, 0.15)';
+      accent3 = '#a6e3a1'; bgAcc3 = 'rgba(166, 227, 161, 0.15)';
+      accent4 = '#cba6f7'; bgAcc4 = 'rgba(203, 166, 247, 0.15)';
+    } else {
+      // default (Anki Classic Dark)
+      bgCol = '#3a3a3c'; txtCol = '#f5f5f5'; borderCol = '#4a4a4c'; labelCol = '#999999';
+      accent1 = '#59adeb'; bgAcc1 = 'transparent';
+      accent2 = '#e25d5d'; bgAcc2 = 'transparent';
+      accent3 = '#50b050'; bgAcc3 = 'transparent';
+      accent4 = '#e5b567'; bgAcc4 = 'transparent';
+    }
+
     return `
 <style>
   .anki-front-container {
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     text-align: center !important;
     font-size: 2.2rem;
     font-weight: 800;
     padding: 20px;
-    color: #ffffff;
+    color: ${txtCol};
+  }
+  .anki-card-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    text-align: left !important;
+    max-width: 550px;
+    margin: 10px auto;
+    padding: 18px;
+    background: ${bgCol};
+    color: ${txtCol};
+    border-radius: 12px;
+    border: 1px solid ${borderCol};
+    font-size: 15px;
   }
   .anki-article {
     font-size: 1.3rem;
@@ -890,101 +1278,29 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
     display: inline-block;
   }
   .gender-masculine {
-    color: #89b4fa;
-    background: rgba(137, 180, 250, 0.15);
-    border: 1px solid rgba(137, 180, 250, 0.3);
+    color: ${accent1};
+    background: ${bgAcc1};
+    border: 1px solid ${theme === 'default' ? 'transparent' : accent1};
   }
   .gender-feminine {
-    color: #f38ba8;
-    background: rgba(243, 139, 168, 0.15);
-    border: 1px solid rgba(243, 139, 168, 0.3);
+    color: ${accent2};
+    background: ${bgAcc2};
+    border: 1px solid ${theme === 'default' ? 'transparent' : accent2};
   }
   .gender-neuter {
-    color: #a6e3a1;
-    background: rgba(166, 227, 161, 0.15);
-    border: 1px solid rgba(166, 227, 161, 0.3);
-  }
-  @media (prefers-color-scheme: light) {
-    .anki-front-container {
-      color: #1e293b;
-    }
-    .gender-masculine {
-      color: #1e3a8a;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-    }
-    .gender-feminine {
-      color: #9d174d;
-      background: #fdf2f8;
-      border: 1px solid #fbcfe8;
-    }
-    .gender-neuter {
-      color: #065f46;
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-    }
-  }
-</style>
-<div class="anki-front-container">
-  ${showArticle ? `<span class="anki-article ${genderClass}">${escapeHtml(data.article)}</span>` : ''}
-  <span class="anki-word-text">${escapeHtml(data.baseForm)}</span>
-</div>
-    `;
-  }
-
-  // Construct card Back HTML for Anki
-  function generateBackHtml(data) {
-    const showArticle = data.article && data.article.trim() !== '';
-    const genderClass = data.gender && data.gender !== 'none' ? `gender-${data.gender}` : '';
-
-    return `
-<style>
-  .anki-card-container {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    text-align: left !important;
-    max-width: 550px;
-    margin: 10px auto;
-    padding: 18px;
-    background: #1e1e2e;
-    color: #cdd6f4;
-    border-radius: 12px;
-    border: 1px solid #313244;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    font-size: 15px;
+    color: ${accent3};
+    background: ${bgAcc3};
+    border: 1px solid ${theme === 'default' ? 'transparent' : accent3};
   }
   .anki-word-header {
     font-size: 1.6rem;
     font-weight: 800;
     margin-top: 0;
     margin-bottom: 12px;
-    color: #89b4fa;
-    border-bottom: 2px solid rgba(137, 180, 250, 0.15);
+    color: ${accent1};
+    border-bottom: 2px solid ${theme === 'default' ? borderCol : bgAcc1};
     padding-bottom: 6px;
     text-align: left !important;
-  }
-  .anki-article {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-right: 8px;
-    padding: 2px 8px;
-    border-radius: 6px;
-    vertical-align: middle;
-    display: inline-block;
-  }
-  .gender-masculine {
-    color: #89b4fa;
-    background: rgba(137, 180, 250, 0.15);
-    border: 1px solid rgba(137, 180, 250, 0.3);
-  }
-  .gender-feminine {
-    color: #f38ba8;
-    background: rgba(243, 139, 168, 0.15);
-    border: 1px solid rgba(243, 139, 168, 0.3);
-  }
-  .gender-neuter {
-    color: #a6e3a1;
-    background: rgba(166, 227, 161, 0.15);
-    border: 1px solid rgba(166, 227, 161, 0.3);
   }
   .anki-section {
     margin-bottom: 12px;
@@ -992,7 +1308,7 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
   }
   .anki-label {
     font-size: 10px;
-    color: #a6adc8;
+    color: ${labelCol};
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin-bottom: 3px;
@@ -1005,108 +1321,122 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
   }
   .anki-value.meaning {
     font-weight: bold;
-    color: #f38ba8;
+    color: ${accent2};
     font-size: 1.1rem;
     text-align: left !important;
   }
   .anki-value.core-image {
-    color: #fab387;
-    background: #252538;
-    padding: 8px 12px;
+    color: ${accent4};
+    background: ${theme === 'default' ? 'transparent' : bgAcc4};
+    padding: ${theme === 'default' ? '0' : '8px 12px'};
     border-radius: 6px;
-    border-left: 4px solid #fab387;
+    border-left: 4px solid ${theme === 'default' ? 'transparent' : accent4};
     text-align: left !important;
   }
   .anki-value.etymology {
-    color: #cba6f7;
-    background: #252538;
-    padding: 8px 12px;
+    color: ${accent1};
+    background: ${theme === 'default' ? 'transparent' : bgAcc1};
+    padding: ${theme === 'default' ? '0' : '8px 12px'};
     border-radius: 6px;
-    border-left: 4px solid #cba6f7;
+    border-left: 4px solid ${theme === 'default' ? 'transparent' : accent1};
     text-align: left !important;
   }
   .anki-value.example-en {
     font-style: italic;
-    color: #a6e3a1;
+    color: ${accent3};
     margin-bottom: 1px;
     text-align: left !important;
   }
   .anki-value.example-ja {
     font-size: 13px;
-    color: #bac2de;
+    color: ${theme === 'default' ? '#aaaaaa' : txtCol};
     text-align: left !important;
   }
-  
-  @media (prefers-color-scheme: light) {
-    .anki-card-container {
-      background: #ffffff;
-      color: #313244;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    }
-    .anki-word-header {
-      color: #3b82f6;
-      border-bottom-color: rgba(59, 130, 246, 0.15);
-    }
-    .gender-masculine {
-      color: #1e3a8a;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-    }
-    .gender-feminine {
-      color: #9d174d;
-      background: #fdf2f8;
-      border: 1px solid #fbcfe8;
-    }
-    .gender-neuter {
-      color: #065f46;
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-    }
-    .anki-label {
-      color: #64748b;
-    }
-    .anki-value.meaning {
-      color: #db2777;
-    }
-    .anki-value.core-image {
-      color: #d97706;
-      background: #f8fafc;
-      border-left-color: #d97706;
-    }
-    .anki-value.etymology {
-      color: #7c3aed;
-      background: #f8fafc;
-      border-left-color: #7c3aed;
-    }
-    .anki-value.example-en {
-      color: #15803d;
-    }
-    .anki-value.example-ja {
-      color: #475569;
-    }
+  .anki-pos {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: ${bgCol};
+    background: ${labelCol};
+    padding: 2px 8px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 8px;
+    display: inline-block;
+  }
+  .anki-pronunciation {
+    font-size: 1.1rem;
+    color: ${labelCol};
+    margin-left: 8px;
+    font-weight: normal;
   }
 </style>
+`;
+  }
 
+  // Construct card Front HTML for Anki
+  function generateFrontHtml(data) {
+    const showArticle = data.article && data.article.trim() !== '';
+    const genderClass = data.gender && data.gender !== 'none' ? `gender-${data.gender}` : '';
+    
+    return getCardCss() + `
+<div class="anki-front-container">
+  ${showArticle ? `<span class="anki-article ${genderClass}">${escapeHtml(data.article)}</span>` : ''}
+  <span class="anki-word-text">${escapeHtml(data.baseForm)}</span>
+</div>
+    `;
+  }
+
+  // Construct card Back HTML for Anki
+  function generateBackHtml(data) {
+    const showArticle = data.article && data.article.trim() !== '';
+    const showPos = data.partOfSpeech && data.partOfSpeech.trim() !== '';
+    const showPronunciation = data.pronunciation && data.pronunciation.trim() !== '';
+    const genderClass = data.gender && data.gender !== 'none' ? `gender-${data.gender}` : '';
+    
+    const targetLang = targetLangSelect ? targetLangSelect.value : 'English';
+    const labels = cardSubtitles[targetLang] || cardSubtitles['English'];
+
+    let customFieldsHtml = '';
+    if (data.customFields && Array.isArray(data.customFields)) {
+      data.customFields.forEach(cf => {
+        if (cf.value && cf.value.trim() !== '') {
+          customFieldsHtml += `
+  <div class="anki-section">
+    <div class="anki-label">${escapeHtml(cf.fieldName)}</div>
+    <div class="anki-value">${escapeHtml(cf.value)}</div>
+  </div>`;
+        }
+      });
+    }
+
+    return getCardCss() + `
 <div class="anki-card-container">
   <h2 class="anki-word-header">
     ${showArticle ? `<span class="anki-article ${genderClass}">${escapeHtml(data.article)}</span>` : ''}
     ${escapeHtml(data.baseForm)}
+    ${showPronunciation ? `<span class="anki-pronunciation">/${escapeHtml(data.pronunciation)}/</span>` : ''}
+    ${showPos ? `<span class="anki-pos">${escapeHtml(data.partOfSpeech)}</span>` : ''}
   </h2>
   <div class="anki-section">
-    <div class="anki-label">意味 (Meaning)</div>
+    <div class="anki-label">${escapeHtml(labels.meaning)}</div>
     <div class="anki-value meaning">${escapeHtml(data.meaning)}</div>
   </div>
+  ${customFieldsHtml}
   <div class="anki-section">
-    <div class="anki-label">コアイメージ (Core Image)</div>
+    <div class="anki-label">${escapeHtml(labels.coreImage)}</div>
     <div class="anki-value core-image">${escapeHtml(data.coreImage, true)}</div>
   </div>
   <div class="anki-section">
-    <div class="anki-label">語源 (Etymology)</div>
+    <div class="anki-label">${escapeHtml(labels.etymology)}</div>
     <div class="anki-value etymology">${escapeHtml(data.etymology, true)}</div>
   </div>
+  ${data.inflectionTable && data.inflectionTable.trim() !== '' ? `
   <div class="anki-section">
-    <div class="anki-label">例文 (Example)</div>
+    <div class="anki-label">${escapeHtml(labels.inflectionTable)}</div>
+    <div class="anki-value inflection-table">${data.inflectionTable}</div>
+  </div>` : ''}
+  <div class="anki-section">
+    <div class="anki-label">${escapeHtml(labels.example)}</div>
     <div class="anki-value example-en">${escapeHtml(data.exampleSentence.original)}</div>
     <div class="anki-value example-ja">${escapeHtml(data.exampleSentence.translation)}</div>
   </div>
@@ -1164,6 +1494,24 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
         document.getElementById('card-preview-back').classList.add('active');
       } else if (tabId === 'fields-view') {
         document.getElementById('card-preview-fields').classList.add('active');
+      }
+    });
+  });
+
+  // Settings Tab switching
+  const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
+  const settingsTabContents = document.querySelectorAll('.settings-tab-content');
+  
+  settingsTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      settingsTabBtns.forEach(b => b.classList.remove('active'));
+      settingsTabContents.forEach(c => c.classList.add('hide'));
+
+      btn.classList.add('active');
+      const tabId = btn.getAttribute('data-tab');
+      const targetContent = document.getElementById(tabId);
+      if (targetContent) {
+        targetContent.classList.remove('hide');
       }
     });
   });
