@@ -1,18 +1,18 @@
 const languageNames = {
   ja: {
-    English: "闍ｱ隱・(English)",
-    Japanese: "譌･譛ｬ隱・(Japanese)",
-    German: "繝峨う繝・ｪ・(German)",
-    French: "繝輔Λ繝ｳ繧ｹ隱・(French)",
-    Spanish: "繧ｹ繝壹う繝ｳ隱・(Spanish)",
-    Italian: "繧､繧ｿ繝ｪ繧｢隱・(Italian)",
-    Chinese: "荳ｭ蝗ｽ隱・(Chinese)",
-    Korean: "髻灘嵜隱・(Korean)",
-    Russian: "繝ｭ繧ｷ繧｢隱・(Russian)",
-    Portuguese: "繝昴Ν繝医ぎ繝ｫ隱・(Portuguese)",
-    Dutch: "繧ｪ繝ｩ繝ｳ繝隱・(Dutch)",
-    Arabic: "繧｢繝ｩ繝薙い隱・(Arabic)",
-    "Auto-detect": "閾ｪ蜍墓､懷・ (Auto)"
+    English: "英語 (English)",
+    Japanese: "日本語 (Japanese)",
+    German: "ドイツ語 (German)",
+    French: "フランス語 (French)",
+    Spanish: "スペイン語 (Spanish)",
+    Italian: "イタリア語 (Italian)",
+    Chinese: "中国語 (Chinese)",
+    Korean: "韓国語 (Korean)",
+    Russian: "ロシア語 (Russian)",
+    Portuguese: "ポルトガル語 (Portuguese)",
+    Dutch: "オランダ語 (Dutch)",
+    Arabic: "アラビア語 (Arabic)",
+    "Auto-detect": "自動検出 (Auto)"
   },
   en: {
     English: "English",
@@ -33,89 +33,89 @@ const languageNames = {
 
 const translations = {
   ja: {
-    app_lang_label: "繧ｷ繧ｹ繝・Β險隱・,
-    model_label: "AI繝｢繝・Ν",
-    get_api_key: "API繧ｭ繝ｼ縺ｮ蜿門ｾ励・縺薙■繧峨°繧・(Get API Key)",
-    model_31_lite: "Gemini 3.1 Flash Lite (謗ｨ螂ｨ繝ｻ1譌･500蝗・",
-    model_25_flash: "Gemini 2.5 Flash (1譌･20蝗・",
-    model_35_flash: "Gemini 3.5 Flash (譛譁ｰ繝ｻ1譌･20蝗・",
-    settings: "繝・ャ繧ｭ險ｭ螳・,
-    settings_title: "繧｢繝励Μ險ｭ螳・,
-    licenses_btn: "繧ｯ繝ｬ繧ｸ繝・ヨ縺ｨ繝ｩ繧､繧ｻ繝ｳ繧ｹ",
-    licenses_title: "繧ｯ繝ｬ繧ｸ繝・ヨ縺ｨ繝ｩ繧､繧ｻ繝ｳ繧ｹ",
-    save: "菫晏ｭ・,
-    api_key_tip: "繧ｭ繝ｼ縺ｯ繝ｭ繝ｼ繧ｫ繝ｫ迺ｰ蠅・・ <code>.env</code> 繝輔ぃ繧､繝ｫ縺ｫ螳牙・縺ｫ菫晏ｭ倥＆繧後∪縺吶・,
-    deck_label: "逋ｻ骭ｲ蜈医ョ繝・く (Deck)",
-    no_decks: "繝・ャ繧ｭ縺後≠繧翫∪縺帙ｓ (No decks)",
-    loading: "繝ｭ繝ｼ繝我ｸｭ...",
-    input_label: "蜊倩ｪ槫・蜉・,
-    learn_label: "蟄ｦ縺ｶ險隱・,
-    explain_label: "隱ｬ譏弱・險隱・,
-    word_label: "蜊倩ｪ槭ｒ蜈･蜉・,
-    word_placeholder: "萓・ ephemeral, Haus, ﾃｩphﾃｩmﾃｨre",
-    generate_btn: "繧ｫ繝ｼ繝峨ｒ菴懊ｋ",
-    generating: "逕滓・荳ｭ...",
-    recent_title: "譛霑題ｿｽ蜉�縺励◆蜊倩ｪ・,
-    recent_empty: "縺薙・繧ｻ繝・す繝ｧ繝ｳ縺ｧ霑ｽ蜉�縺輔ｌ縺溘き繝ｼ繝峨・縺ゅｊ縺ｾ縺帙ｓ",
-    preview_title: "逕滓・繝励Ξ繝薙Η繝ｼ",
-    preview_placeholder: "蜊倩ｪ槭ｒ蜈･蜉帙＠縺ｦ逕滓・縺吶ｋ縺ｨ縲√％縺薙↓Anki繧ｫ繝ｼ繝峨・繝励Ξ繝薙Η繝ｼ縺瑚｡ｨ遉ｺ縺輔ｌ縺ｾ縺吶・,
-    tab_front: "陦ｨ髱｢ (Front)",
-    tab_back: "陬城擇 (Back)",
-    tab_details: "隧ｳ邏ｰ繝・・繧ｿ",
-    tab_general: "荳闊ｬ",
-    tab_env: "迺ｰ蠅・ｨｭ螳・,
-    tab_ext: "諡｡蠑ｵ讖溯・",
-    preview_front_tag: "Anki 陦ｨ髱｢繝励Ξ繝薙Η繝ｼ",
-    preview_back_tag: "Anki 陬城擇繝励Ξ繝薙Η繝ｼ",
-    field_base: "蜴溷梛 (Base Form)",
-    field_article: "蜀�隧・(Article)",
-    field_gender: "諤ｧ蛻･ (Gender)",
-    gender_none: "縺ｪ縺・(None)",
-    gender_masc: "逕ｷ諤ｧ (Masculine)",
-    gender_fem: "螂ｳ諤ｧ (Feminine)",
-    gender_neuter: "荳ｭ諤ｧ (Neuter)",
-    field_meaning: "諢丞袖 (Meaning)",
-    field_core: "繧ｳ繧｢繧､繝｡繝ｼ繧ｸ (Core Image)",
-    field_etymology: "隱樊ｺ・(Etymology)",
-    field_example_org: "萓区枚 [蟄ｦ鄙定ｨ隱枉 (Example Original)",
-    field_example_tr: "萓区枚 [隱ｬ譏手ｨ隱枉 (Example Translation)",
-    edit_tip: "�庁 逋ｻ骭ｲ蜑阪↓繝・・繧ｿ繧貞ｾｮ隱ｿ謨ｴ縺ｧ縺阪∪縺吶りｪｿ謨ｴ縺励◆蜀・ｮｹ縺ｯ縲瑚｣城擇繝励Ξ繝薙Η繝ｼ縲阪↓蜊ｳ譎ょ渚譏�縺輔ｌ縺ｾ縺吶・,
-    register_btn: "繧ｫ繝ｼ繝峨ｒ逋ｻ骭ｲ縺吶ｋ",
-    new_deck_title: "譁ｰ縺励＞繝・ャ繧ｭ縺ｮ菴懈・",
-    new_deck_desc: "菴懈・縺吶ｋ繝・ャ繧ｭ蜷阪ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞・医ロ繧ｹ繝医☆繧矩嚴螻､縺ｯ \"English::Vocab\" 縺ｮ繧医≧縺ｫ繧ｳ繝ｭ繝ｳ2縺､縺ｧ蛹ｺ蛻・▲縺ｦ謖・ｮ壹〒縺阪∪縺呻ｼ峨・,
-    cancel: "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",
-    create: "菴懈・",
-    status_connected: "謗･邯壻ｸｭ",
-    status_disconnected: "譛ｪ謗･邯・,
-    status_configured: "險ｭ螳壽ｸ・,
-    status_missing: "譛ｪ險ｭ螳・,
-    status_connected_desc: "AnkiConnect縺ｨ謗･邯壹＆繧後※縺・∪縺・,
-    status_disconnected_desc: "AnkiConnect縺瑚ｦ九▽縺九ｊ縺ｾ縺帙ｓ縲・nki縺瑚ｵｷ蜍輔＠縺ｦ縺翫ｊ縲√い繝峨が繝ｳ縺後う繝ｳ繧ｹ繝医・繝ｫ縺輔ｌ縺ｦ縺・ｋ縺薙→繧堤｢ｺ隱阪＠縺ｦ縺上□縺輔＞縲・,
-    toast_api_key_required: "API繧ｭ繝ｼ繧貞・蜉帙＠縺ｦ縺上□縺輔＞縲・,
-    toast_api_key_saved: "API繧ｭ繝ｼ繧剃ｿ晏ｭ倥＠縺ｾ縺励◆縲・,
-    toast_server_error: "繧ｵ繝ｼ繝舌・縺ｨ縺ｮ騾壻ｿ｡縺ｫ螟ｱ謨励＠縺ｾ縺励◆縲・,
-    toast_anki_disconnected: "Anki縺ｫ謗･邯壹＆繧後※縺・∪縺帙ｓ縲・,
-    toast_enter_deck_name: "繝・ャ繧ｭ蜷阪ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞縲・,
-    toast_deck_created: "繝・ャ繧ｭ \"{name}\" 繧剃ｽ懈・縺励∪縺励◆縲・,
-    toast_gemini_key_required: "Gemini API繧ｭ繝ｼ繧定ｨｭ螳壹＠縺ｦ縺上□縺輔＞縲・,
-    toast_gen_complete: "繧ｫ繝ｼ繝峨・逕滓・縺悟ｮ御ｺ・＠縺ｾ縺励◆・・,
-    toast_select_deck: "逋ｻ骭ｲ蜈医ョ繝・く繧帝∈謚槭＠縺ｦ縺上□縺輔＞縲・,
-    toast_add_success: "Anki繝・ャ繧ｭ \"{name}\" 縺ｫ逋ｻ骭ｲ縺励∪縺励◆・・,
-    toast_add_error: "逋ｻ骭ｲ繧ｨ繝ｩ繝ｼ: ",
-    update_available: "譁ｰ縺励＞繧｢繝・・繝・・繝茨ｼ・latest}・峨′蛻ｩ逕ｨ蜿ｯ閭ｽ縺ｧ縺吶・n繝繧ｦ繝ｳ繝ｭ繝ｼ繝峨＠縺ｦ繧､繝ｳ繧ｹ繝医・繝ｫ縺励∪縺吶°・歃n(迴ｾ蝨ｨ縺ｮ繝舌・繧ｸ繝ｧ繝ｳ: {current})",
-    update_downloading: "繧｢繝・・繝・・繝医・繝繧ｦ繝ｳ繝ｭ繝ｼ繝峨ｒ髢句ｧ九＠縺ｾ縺・..",
-    update_ready: "繝繧ｦ繝ｳ繝ｭ繝ｼ繝牙ｮ御ｺ・ゅう繝ｳ繧ｹ繝医・繝ｫ繧帝幕蟋九＠縺ｾ縺・..",
-    update_plugin_error: "蠢・ｦ√↑繝励Λ繧ｰ繧､繝ｳ縺後Ο繝ｼ繝峨＆繧後※縺・∪縺帙ｓ",
-    update_error: "繧｢繝・・繝・・繝医・遒ｺ隱阪・蜃ｦ逅・ｸｭ縺ｫ繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆: ",
-    field_pos: "蜩∬ｩ・(Part of Speech)",
-    field_pronunciation: "逋ｺ髻ｳ險伜捷 (Pronunciation)",
-    generate_custom_fields: "繧ｫ繧ｹ繧ｿ繝�繝輔ぅ繝ｼ繝ｫ繝峨ｒ逕滓・縺吶ｋ (豸郁ｲｻ繝医・繧ｯ繝ｳ竊・",
-    custom_fields_setting_title: "繧ｫ繧ｹ繧ｿ繝�繝輔ぅ繝ｼ繝ｫ繝・,
-    custom_fields_setting_desc: "縺薙％縺ｧ險ｭ螳壹＠縺滄�・岼繧但I縺梧歓蜃ｺ縺励∪縺・,
-    save_cf_btn: "繝輔ぅ繝ｼ繝ｫ繝芽ｨｭ螳壹ｒ菫晏ｭ・,
-    app_theme_label: "繧｢繝励Μ繝・・繝・,
-    card_theme_label: "繧ｫ繝ｼ繝牙・蜉帷畑CSS",
-    add_cf_btn: "霑ｽ蜉�"
+    app_lang_label: "システム言語",
+    model_label: "AIモデル",
+    get_api_key: "APIキーの取得はこちらから (Get API Key)",
+    model_31_lite: "Gemini 3.1 Flash Lite (推奨・1日500回)",
+    model_25_flash: "Gemini 2.5 Flash (1日20回)",
+    model_35_flash: "Gemini 3.5 Flash (最新・1日20回)",
+    settings: "デッキ設定",
+    settings_title: "アプリ設定",
+    licenses_btn: "クレジットとライセンス",
+    licenses_title: "クレジットとライセンス",
+    save: "保存",
+    api_key_tip: "キーはローカル環境の <code>.env</code> ファイルに安全に保存されます。",
+    deck_label: "登録先デッキ (Deck)",
+    no_decks: "デッキがありません (No decks)",
+    loading: "ロード中...",
+    input_label: "単語入力",
+    learn_label: "学ぶ言語",
+    explain_label: "説明の言語",
+    word_label: "単語を入力",
+    word_placeholder: "例: ephemeral, Haus, éphémère",
+    generate_btn: "カードを作る",
+    generating: "生成中...",
+    recent_title: "最近追加した単語",
+    recent_empty: "このセッションで追加されたカードはありません",
+    preview_title: "生成プレビュー",
+    preview_placeholder: "単語を入力して生成すると、ここにAnkiカードのプレビューが表示されます。",
+    tab_front: "表面 (Front)",
+    tab_back: "裏面 (Back)",
+    tab_details: "詳細データ",
+    tab_general: "一般",
+    tab_env: "環境設定",
+    tab_ext: "拡張機能",
+    preview_front_tag: "Anki 表面プレビュー",
+    preview_back_tag: "Anki 裏面プレビュー",
+    field_base: "原型 (Base Form)",
+    field_article: "冠詞 (Article)",
+    field_gender: "性別 (Gender)",
+    gender_none: "なし (None)",
+    gender_masc: "男性 (Masculine)",
+    gender_fem: "女性 (Feminine)",
+    gender_neuter: "中性 (Neuter)",
+    field_meaning: "意味 (Meaning)",
+    field_core: "コアイメージ (Core Image)",
+    field_etymology: "語源 (Etymology)",
+    field_example_org: "例文 [学習言語] (Example Original)",
+    field_example_tr: "例文 [説明言語] (Example Translation)",
+    edit_tip: "💡 登録前にデータを微調整できます。調整した内容は「裏面プレビュー」に即時反映されます。",
+    register_btn: "カードを登録する",
+    new_deck_title: "新しいデッキの作成",
+    new_deck_desc: "作成するデッキ名を入力してください（ネストする階層は \"English::Vocab\" のようにコロン2つで区切って指定できます）。",
+    cancel: "キャンセル",
+    create: "作成",
+    status_connected: "接続中",
+    status_disconnected: "未接続",
+    status_configured: "設定済",
+    status_missing: "未設定",
+    status_connected_desc: "AnkiConnectと接続されています",
+    status_disconnected_desc: "AnkiConnectが見つかりません。Ankiが起動しており、アドオンがインストールされていることを確認してください。",
+    toast_api_key_required: "APIキーを入力してください。",
+    toast_api_key_saved: "APIキーを保存しました。",
+    toast_server_error: "サーバーとの通信に失敗しました。",
+    toast_anki_disconnected: "Ankiに接続されていません。",
+    toast_enter_deck_name: "デッキ名を入力してください。",
+    toast_deck_created: "デッキ \"{name}\" を作成しました。",
+    toast_gemini_key_required: "Gemini APIキーを設定してください。",
+    toast_gen_complete: "カードの生成が完了しました！",
+    toast_select_deck: "登録先デッキを選択してください。",
+    toast_add_success: "Ankiデッキ \"{name}\" に登録しました！",
+    toast_add_error: "登録エラー: ",
+    update_available: "新しいアップデート（{latest}）が利用可能です。\nダウンロードしてインストールしますか？\n(現在のバージョン: {current})",
+    update_downloading: "アップデートのダウンロードを開始します...",
+    update_ready: "ダウンロード完了。インストールを開始します...",
+    update_plugin_error: "必要なプラグインがロードされていません",
+    update_error: "アップデートの確認・処理中にエラーが発生しました: ",
+    field_pos: "品詞 (Part of Speech)",
+    field_pronunciation: "発音記号 (Pronunciation)",
+    generate_custom_fields: "カスタムフィールドを生成する (消費トークン↑)",
+    custom_fields_setting_title: "カスタムフィールド",
+    custom_fields_setting_desc: "ここで設定した項目をAIが抽出します",
+    save_cf_btn: "フィールド設定を保存",
+    app_theme_label: "アプリテーマ",
+    card_theme_label: "カード出力用CSS",
+    add_cf_btn: "追加"
   },
   en: {
     app_lang_label: "System Language",
@@ -137,7 +137,7 @@ const translations = {
     learn_label: "Language to Learn",
     explain_label: "Explanation Language",
     word_label: "Enter Word",
-    word_placeholder: "e.g., ephemeral, Haus, ﾃｩphﾃｩmﾃｨre",
+    word_placeholder: "e.g., ephemeral, Haus, éphémère",
     generate_btn: "Generate",
     generating: "Generating...",
     recent_title: "Recently Added",
@@ -164,7 +164,7 @@ const translations = {
     field_etymology: "Etymology",
     field_example_org: "Example (Original)",
     field_example_tr: "Example (Translation)",
-    edit_tip: "�庁 You can fine-tune the data before adding. Changes reflect instantly on the Back preview.",
+    edit_tip: "💡 You can fine-tune the data before adding. Changes reflect instantly on the Back preview.",
     register_btn: "Add to Deck",
     new_deck_title: "Create New Deck",
     new_deck_desc: "Enter a name for the new deck (you can nest decks using double colons like \"English::Vocab\").",
@@ -194,7 +194,7 @@ const translations = {
     update_error: "An error occurred during the update process: ",
     field_pos: "Part of Speech",
     field_pronunciation: "Pronunciation",
-    generate_custom_fields: "Generate Custom Fields (Token竊・",
+    generate_custom_fields: "Generate Custom Fields (Token↑)",
     custom_fields_setting_title: "Custom Fields",
     custom_fields_setting_desc: "The AI will extract these items",
     save_cf_btn: "Save Custom Fields",
@@ -206,18 +206,18 @@ const translations = {
 
 // --- Hardcoded Anki Card Subtitles per Target Language ---
 const cardSubtitles = {
-  Japanese: { meaning: "諢丞袖", coreImage: "繧ｳ繧｢繧､繝｡繝ｼ繧ｸ", etymology: "隱樊ｺ・, example: "萓区枚", inflectionTable: "豢ｻ逕ｨ繝ｻ螟牙喧陦ｨ" },
+  Japanese: { meaning: "意味", coreImage: "コアイメージ", etymology: "語源", example: "例文", inflectionTable: "活用・変化表" },
   English: { meaning: "Meaning", coreImage: "Core Image", etymology: "Etymology", example: "Example", inflectionTable: "Inflection Table" },
   German: { meaning: "Bedeutung", coreImage: "Kernbild", etymology: "Etymologie", example: "Beispiel", inflectionTable: "Deklination / Konjugation" },
-  French: { meaning: "Signification", coreImage: "Image centrale", etymology: "ﾃ液ymologie", example: "Exemple", inflectionTable: "Conjugaison / Dﾃｩclinaison" },
-  Spanish: { meaning: "Significado", coreImage: "Imagen central", etymology: "Etimologﾃｭa", example: "Ejemplo", inflectionTable: "Conjugaciﾃｳn / Declinaciﾃｳn" },
+  French: { meaning: "Signification", coreImage: "Image centrale", etymology: "Étymologie", example: "Exemple", inflectionTable: "Conjugaison / Déclinaison" },
+  Spanish: { meaning: "Significado", coreImage: "Imagen central", etymology: "Etimología", example: "Ejemplo", inflectionTable: "Conjugación / Declinación" },
   Italian: { meaning: "Significato", coreImage: "Immagine centrale", etymology: "Etimologia", example: "Esempio", inflectionTable: "Coniugazione / Declinazione" },
-  Chinese: { meaning: "蜷ｫ荵・, coreImage: "譬ｸ蠢・э雎｡", etymology: "隸肴ｺ・, example: "萓句唱", inflectionTable: "隸榊ｽ｢蜿伜喧" },
-  Korean: { meaning: "・俯ｯｸ", coreImage: "﨑ｵ・ｬ ・ｴ・ｸ・", etymology: "・ｴ・・, example: "・壱ｬｸ", inflectionTable: "嶹懍圸岺・ },
-  Russian: { meaning: "ﾐ厘ｽﾐｰﾑ・ｵﾐｽﾐｸﾐｵ", coreImage: "ﾐ墟ｻﾑ紗・ｵﾐｲﾐｾﾐｹ ﾐｾﾐｱﾑﾐｰﾐｷ", etymology: "ﾐｭﾑひｸﾐｼﾐｾﾐｻﾐｾﾐｳﾐｸﾑ・, example: "ﾐ湲ﾐｸﾐｼﾐｵﾑ", inflectionTable: "ﾐ｡ﾐｺﾐｻﾐｾﾐｽﾐｵﾐｽﾐｸﾐｵ / ﾐ｡ﾐｿﾑﾑ紹ｶﾐｵﾐｽﾐｸﾐｵ" },
-  Portuguese: { meaning: "Significado", coreImage: "Imagem central", etymology: "Etimologia", example: "Exemplo", inflectionTable: "Conjugaﾃｧﾃ｣o / Declinaﾃｧﾃ｣o" },
+  Chinese: { meaning: "含义", coreImage: "核心意象", etymology: "词源", example: "例句", inflectionTable: "词形变化" },
+  Korean: { meaning: "의미", coreImage: "핵심 이미지", etymology: "어원", example: "예문", inflectionTable: "활용표" },
+  Russian: { meaning: "Значение", coreImage: "Ключевой образ", etymology: "Этимология", example: "Пример", inflectionTable: "Склонение / Спряжение" },
+  Portuguese: { meaning: "Significado", coreImage: "Imagem central", etymology: "Etimologia", example: "Exemplo", inflectionTable: "Conjugação / Declinação" },
   Dutch: { meaning: "Betekenis", coreImage: "Kernbeeld", etymology: "Etymologie", example: "Voorbeeld", inflectionTable: "Verbuiging / Vervoeging" },
-  Arabic: { meaning: "ﾘｧﾙ・・ｹﾙ・・, coreImage: "ﾘｧﾙ・ｵﾙ畏ｱﾘｩ ﾘｧﾙ・｣ﾘｳﾘｧﾘｳﾙ韓ｩ", etymology: "ﾘ｣ﾘｵﾙ・ﾘｧﾙ・・・・ｩ", example: "ﾙ・ｫﾘｧﾙ・, inflectionTable: "ﾘｬﾘｯﾙ異・ﾘｧﾙ・ｪﾘｵﾘｱﾙ館・ }
+  Arabic: { meaning: "المعنى", coreImage: "الصورة الأساسية", etymology: "أصل الكلمة", example: "مثال", inflectionTable: "جدول التصريف" }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -615,7 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isAndroidApp) {
         const plugins = window.Capacitor.Plugins;
         if (!plugins || !plugins.AnkiDroid) {
-          throw new Error("繝阪う繝・ぅ繝悶・繝ｩ繧ｰ繧､繝ｳ AnkiDroid 縺梧､懷・縺輔ｌ縺ｾ縺帙ｓ縺ｧ縺励◆縲・);
+          throw new Error("ネイティブプラグイン AnkiDroid が検出されませんでした。");
         }
         const { AnkiDroid } = plugins;
         let permStatus = await AnkiDroid.checkPermission();
@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
           permStatus = await AnkiDroid.requestPermission();
         }
         if (!permStatus.granted) {
-          throw new Error("AnkiDroid縺ｸ縺ｮ繝・・繧ｿ繝吶・繧ｹ繧｢繧ｯ繧ｻ繧ｹ讓ｩ髯舌′縺ゅｊ縺ｾ縺帙ｓ縲りｨｭ螳壹°繧芽ｨｱ蜿ｯ縺励※縺上□縺輔＞縲・);
+          throw new Error("AnkiDroidへのデータベースアクセス権限がありません。設定から許可してください。");
         }
       }
 
@@ -637,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Status check failed:', error);
       updateAnkiStatusUI(false, error.message);
       disableAnkiControls();
-      showToast("Anki謗･邯壹お繝ｩ繝ｼ: " + error.message, 'error');
+      showToast("Anki接続エラー: " + error.message, 'error');
     }
   }
 
@@ -693,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (decks.length === 0) {
       const opt = document.createElement('option');
       opt.value = '';
-      opt.textContent = translations[state.appLang].no_decks || "繝・ャ繧ｭ縺後≠繧翫∪縺帙ｓ"; // Placeholder
+      opt.textContent = translations[state.appLang].no_decks || "デッキがありません"; // Placeholder
       deckSelect.appendChild(opt);
       return;
     }
@@ -727,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (isAndroidApp) {
-      alert("Android迚医〒縺ｯ繧｢繝励Μ縺九ｉ逶ｴ謗･繝・ャ繧ｭ繧剃ｽ懈・縺ｧ縺阪∪縺帙ｓ縲・n縺頑焔謨ｰ縺ｧ縺吶′縲∽ｸ蠎ｦ AnkiDroid 繧｢繝励Μ繧帝幕縺・※繝・ャ繧ｭ繧剃ｽ懈・縺励※縺九ｉ縲∝・蠎ｦ縺願ｩｦ縺励￥縺�縺輔＞縲・);
+      alert("Android版ではアプリから直接デッキを作成できません。\nお手数ですが、一度 AnkiDroid アプリを開いてデッキを作成してから、再度お試しください。");
       return;
     }
     deckModal.classList.remove('hide');
@@ -810,7 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.createElement('input');
     input.type = 'text';
     input.value = val;
-    input.placeholder = '萓・ Past Tense';
+    input.placeholder = '例: Past Tense';
     input.className = 'cf-item-input';
     input.style.flex = '1';
 
@@ -867,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delete config[langValue];
       }
       localStorage.setItem('suguanki_custom_fields_config', JSON.stringify(config));
-      showToast("繧ｫ繧ｹ繧ｿ繝�繝輔ぅ繝ｼ繝ｫ繝芽ｨｭ螳壹ｒ菫晏ｭ倥＠縺ｾ縺励◆", "success");
+      showToast("カスタムフィールド設定を保存しました", "success");
     });
   }
 
@@ -920,7 +920,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
         let prompt = `Analyze the vocabulary word, phrase, or idiom: "${word}" in ${sourceLang}.
-You must return the dictionary base form (蜴溷梛) of the expression in ${sourceLang} (if it's an idiom or phrasal verb, return its standard base form, e.g., 'kick the bucket', 'look forward to'), its part of speech (蜩∬ｩ・ in ${sourceLang} (e.g., Idiom, Phrasal Verb, Noun, Verb, etc.), its pronunciation (逋ｺ髻ｳ險伜捷) in IPA format, its meaning in ${targetLang}, the core image/essence (繧ｳ繧｢繧､繝｡繝ｼ繧ｸ) of the expression in ${targetLang} (keep it concise and clear), the etymology/word origin (隱樊ｺ・ of the expression in ${targetLang} (explain prefixes, roots, or origin briefly. If it is a compound word (蜷域・隱・, explicitly state so and briefly explain its parts. If not applicable or unknown, explicitly state "荳肴・" (Unknown) and provide a very brief explanation. Do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+You must return the dictionary base form (原型) of the expression in ${sourceLang} (if it's an idiom or phrasal verb, return its standard base form, e.g., 'kick the bucket', 'look forward to'), its part of speech (品詞) in ${sourceLang} (e.g., Idiom, Phrasal Verb, Noun, Verb, etc.), its pronunciation (発音記号) in IPA format, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the expression in ${targetLang} (keep it concise and clear), the etymology/word origin (語源) of the expression in ${targetLang} (explain prefixes, roots, or origin briefly. If it is a compound word (合成語), explicitly state so and briefly explain its parts. If not applicable or unknown, explicitly state "不明" (Unknown) and provide a very brief explanation. Do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
 
         const properties = {
           baseForm: { type: "STRING" },
@@ -1123,7 +1123,7 @@ You must return the dictionary base form (蜴溷梛) of the expression in ${sour
     const backHtml = generateBackHtml(state.currentData);
 
     try {
-      // Always use SuguAnki Basic by default
+      // Always use AnkiLLM Basic by default
       let targetModel = 'SuguAnki Basic';
       let targetFields = { front: 'Front', back: 'Back' };
 
@@ -1166,7 +1166,7 @@ You must return the dictionary base form (蜴溷梛) of the expression in ${sour
       }
       
       if (res && res.cardsGenerated === 0) {
-        showToast("Anki縺ｫ繝・・繧ｿ縺ｯ騾∽ｿ｡縺輔ｌ縺ｾ縺励◆縺後√き繝ｼ繝峨′逕滓・縺輔ｌ縺ｾ縺帙ｓ縺ｧ縺励◆縲・nki縺ｮ繝弱・繝医ち繧､繝・蝓ｺ譛ｬ縺ｪ縺ｩ)縺ｮ繝輔ぅ繝ｼ繝ｫ繝芽ｨｭ螳壹ｒ遒ｺ隱阪＠縺ｦ縺上□縺輔＞縲・, 'error');
+        showToast("Ankiにデータは送信されましたが、カードが生成されませんでした。Ankiのノートタイプ(基本など)のフィールド設定を確認してください。", 'error');
       } else {
         showToast(translations[state.appLang].toast_add_success.replace('{name}', deckName), 'success');
       }
@@ -1477,7 +1477,7 @@ You must return the dictionary base form (蜴溷梛) of the expression in ${sour
     if (configured) {
       geminiStatusBadge.className = 'status-badge status-online';
       textNode.textContent = `${translations[state.appLang].status_configured}`;
-      geminiKeyInput.placeholder = '窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢窶｢';
+      geminiKeyInput.placeholder = '••••••••••••••••••••';
     } else {
       geminiStatusBadge.className = 'status-badge status-warning';
       textNode.textContent = `${translations[state.appLang].status_missing}`;
