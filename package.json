@@ -1,17 +1,17 @@
 {
-  "name": "ankillm-workspace",
-  "version": "1.0.1",
+  "name": "suguanki-workspace",
+  "version": "1.0.3",
   "private": true,
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
   "scripts": {
-    "start": "npm run start --workspace=@ankillm/backend",
-    "dev": "npm run dev --workspace=@ankillm/backend",
-    "start:windows": "npm run start --workspace=@ankillm/windows",
-    "build:windows": "npm run build --workspace=@ankillm/windows && node -e \"const fs=require('fs'); fs.mkdirSync('Builds', {recursive:true}); fs.copyFileSync('apps/windows/dist/AnkiLLM Setup 1.0.1.exe', 'Builds/AnkiLLM Setup 1.0.1.exe'); fs.copyFileSync('apps/windows/dist/AnkiLLM-1.0.1-win.zip', 'Builds/AnkiLLM-1.0.1-win.zip'); fs.copyFileSync('apps/windows/dist/latest.yml', 'Builds/latest.yml'); console.log('✅ Windows Builds (.exe, .zip and latest.yml) saved to ./Builds directory');\"",
-    "build:android": "cd apps/mobile && npx cap sync android && cd android && .\\gradlew.bat assembleDebug && cd ../../../ && node -e \"const fs=require('fs'); fs.mkdirSync('Builds', {recursive:true}); fs.copyFileSync('apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk', 'Builds/AnkiLLM-Android-v1.0.1.apk'); console.log('✅ Android Build saved to ./Builds directory');\"",
+    "start": "npm run start --workspace=@suguanki/backend",
+    "dev": "npm run dev --workspace=@suguanki/backend",
+    "start:windows": "npm run start --workspace=@suguanki/windows",
+    "build:windows": "npm run build --workspace=@suguanki/windows && node -e \"const fs=require('fs'); fs.mkdirSync('Builds', {recursive:true}); fs.copyFileSync('apps/windows/dist/SuguAnki Setup 1.0.3.exe', 'Builds/SuguAnki Setup 1.0.3.exe'); fs.copyFileSync('apps/windows/dist/SuguAnki-1.0.3-win.zip', 'Builds/SuguAnki-1.0.3-win.zip'); fs.copyFileSync('apps/windows/dist/latest.yml', 'Builds/latest.yml'); console.log('✅ Windows Builds (.exe, .zip and latest.yml) saved to ./Builds directory');\"",
+    "build:android": "cd apps/mobile && npx cap sync android && cd android && .\\gradlew.bat assembleDebug && cd ../../../ && node -e \"const fs=require('fs'); fs.mkdirSync('Builds', {recursive:true}); fs.copyFileSync('apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk', 'Builds/SuguAnki-Android-v1.0.3.apk'); console.log('✅ Android Build saved to ./Builds directory');\"",
     "build:all": "npm run build:windows && npm run build:android"
   },
   "devDependencies": {

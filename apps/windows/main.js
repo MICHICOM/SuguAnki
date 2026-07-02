@@ -86,7 +86,45 @@ function createWindow() {
   });
 }
 
+const fs = require('fs');
+const { exec } = require('child_process');
+
+function migrateFromAnkiLLM() {
+  const newUserDataPath = app.getPath('userData');
+  const oldUserDataPath = path.join(app.getPath('appData'), 'AnkiLLM');
+  
+  const newEnvPath = path.join(newUserDataPath, '.env');
+  const oldEnvPath = path.join(oldUserDataPath, '.env');
+
+  if (!fs.existsSync(newEnvPath) && fs.existsSync(oldEnvPath)) {
+    try {
+      if (!fs.existsSync(newUserDataPath)) {
+        fs.mkdirSync(newUserDataPath, { recursive: true });
+      }
+      fs.copyFileSync(oldEnvPath, newEnvPath);
+      log.info('Migrated .env from AnkiLLM to SuguAnki.');
+    } catch (err) {
+      log.error('Failed to migrate .env', err);
+    }
+  }
+
+  const localAppData = path.join(app.getPath('appData'), '../Local');
+  const oldUninstallerPath = path.join(localAppData, 'Programs', 'ankillm', 'Uninstall AnkiLLM.exe');
+  
+  if (fs.existsSync(oldUninstallerPath)) {
+    log.info('Found old AnkiLLM uninstaller. Running silently to clean up...');
+    exec(`"${oldUninstallerPath}" /S`, (error, stdout, stderr) => {
+      if (error) {
+        log.error('Failed to uninstall AnkiLLM silently:', error);
+      } else {
+        log.info('Successfully uninstalled old AnkiLLM.');
+      }
+    });
+  }
+}
+
 app.whenReady().then(() => {
+  migrateFromAnkiLLM();
   createWindow();
 
   if (app.isPackaged) {

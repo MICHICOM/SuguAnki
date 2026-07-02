@@ -1,5 +1,5 @@
 {
-  "appId": "com.michicom.ankillm",
-  "appName": "AnkiLLM",
+  "appId": "com.michi.suguanki",
+  "appName": "SuguAnki",
   "webDir": "../../packages/frontend/public"
 }

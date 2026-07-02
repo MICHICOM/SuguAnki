@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.michicom.ankillm"
+    namespace = "com.michi.suguanki"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.michicom.ankillm"
+        applicationId "com.michi.suguanki"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

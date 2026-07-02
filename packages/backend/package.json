@@ -1,6 +1,6 @@
 {
-  "name": "@ankillm/backend",
-  "version": "1.0.1",
+  "name": "@suguanki/backend",
+  "version": "1.0.3",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

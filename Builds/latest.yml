@@ -1,8 +1,8 @@
-version: 1.0.1
+version: 1.0.3
 files:
-  - url: AnkiLLM-Setup-1.0.1.exe
-    sha512: 2LPszbkJErRpbfZaSD4vN/BfQDEriiCEaUY80EbX6aaMGgRvcDtjV6mKb9xE9CWhz8zMddtg9rFkFTvZsVZDKg==
-    size: 104482845
-path: AnkiLLM-Setup-1.0.1.exe
-sha512: 2LPszbkJErRpbfZaSD4vN/BfQDEriiCEaUY80EbX6aaMGgRvcDtjV6mKb9xE9CWhz8zMddtg9rFkFTvZsVZDKg==
-releaseDate: '2026-07-02T12:30:54.255Z'
+  - url: SuguAnki-Setup-1.0.3.exe
+    sha512: gyEex2HvSaTaA8Tla1DLrjwz8hIGNaX+xnrb559q/ijuAyQnq38fnOzFJqb87sahSK2nymXNbe+uK1FCpti6tQ==
+    size: 104497367
+path: SuguAnki-Setup-1.0.3.exe
+sha512: gyEex2HvSaTaA8Tla1DLrjwz8hIGNaX+xnrb559q/ijuAyQnq38fnOzFJqb87sahSK2nymXNbe+uK1FCpti6tQ==
+releaseDate: '2026-07-02T14:53:28.941Z'
