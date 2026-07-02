@@ -304,7 +304,7 @@ app.post('/api/anki/add', async (req, res) => {
       options: {
         allowDuplicate: false,
       },
-      tags: tags || ['AnkiLLM']
+      tags: tags || ['SuguAnki']
     }
   };
 
