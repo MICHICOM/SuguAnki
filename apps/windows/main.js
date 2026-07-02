@@ -109,7 +109,7 @@ function migrateFromAnkiLLM() {
   }
 
   const localAppData = path.join(app.getPath('appData'), '../Local');
-  const oldUninstallerPath = path.join(localAppData, 'Programs', 'ankillm', 'Uninstall AnkiLLM.exe');
+  const oldUninstallerPath = path.join(localAppData, 'Programs', '@ankillmwindows', 'Uninstall AnkiLLM.exe');
   
   if (fs.existsSync(oldUninstallerPath)) {
     log.info('Found old AnkiLLM uninstaller. Running silently to clean up...');
