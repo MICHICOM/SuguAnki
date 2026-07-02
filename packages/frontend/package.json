@@ -1,5 +1,8 @@
 {
   "name": "@ankillm/frontend",
   "version": "1.0.1",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "dompurify": "^3.4.11"
+  }
 }

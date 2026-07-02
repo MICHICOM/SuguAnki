@@ -919,8 +919,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!apiKey) throw new Error("API Key is missing from localStorage");
         
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-        let prompt = `Analyze the vocabulary word: "${word}" in ${sourceLang}.
-You must return the dictionary base form (原型) of the word in ${sourceLang}, its part of speech (品詞) in ${sourceLang}, its pronunciation (発音記号) in IPA format, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
+        let prompt = `Analyze the vocabulary word, phrase, or idiom: "${word}" in ${sourceLang}.
+You must return the dictionary base form (原型) of the expression in ${sourceLang} (if it's an idiom or phrasal verb, return its standard base form, e.g., 'kick the bucket', 'look forward to'), its part of speech (品詞) in ${sourceLang} (e.g., Idiom, Phrasal Verb, Noun, Verb, etc.), its pronunciation (発音記号) in IPA format, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the expression in ${targetLang} (keep it concise and clear), the etymology/word origin (語源) of the expression in ${targetLang} (explain prefixes, roots, or origin briefly. If it is a compound word (合成語), explicitly state so and briefly explain its parts. If not applicable or unknown, explicitly state "不明" (Unknown) and provide a very brief explanation. Do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}.`;
 
         const properties = {
           baseForm: { type: "STRING" },
@@ -1248,13 +1248,22 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
 
     return `
 <style>
+  .anki-card-container, .anki-card-container *,
+  .anki-front-container, .anki-front-container * {
+    box-sizing: border-box;
+  }
   .anki-front-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     text-align: center !important;
     font-size: 2.2rem;
     font-weight: 800;
-    padding: 20px;
+    max-width: 550px;
+    margin: 10px auto;
+    padding: 30px 20px;
+    background: ${bgCol};
     color: ${txtCol};
+    border-radius: 12px;
+    border: 1px solid ${borderCol};
   }
   .anki-card-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -1271,7 +1280,6 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
   .anki-article {
     font-size: 1.3rem;
     font-weight: 600;
-    margin-right: 10px;
     padding: 3px 10px;
     border-radius: 6px;
     vertical-align: middle;
@@ -1293,6 +1301,10 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
     border: 1px solid ${theme === 'default' ? 'transparent' : accent3};
   }
   .anki-word-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
     font-size: 1.6rem;
     font-weight: 800;
     margin-top: 0;
@@ -1413,7 +1425,7 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
 <div class="anki-card-container">
   <h2 class="anki-word-header">
     ${showArticle ? `<span class="anki-article ${genderClass}">${escapeHtml(data.article)}</span>` : ''}
-    ${escapeHtml(data.baseForm)}
+    <span class="anki-word-text">${escapeHtml(data.baseForm)}</span>
     ${showPronunciation ? `<span class="anki-pronunciation">/${escapeHtml(data.pronunciation)}/</span>` : ''}
     ${showPos ? `<span class="anki-pos">${escapeHtml(data.partOfSpeech)}</span>` : ''}
   </h2>
@@ -1433,7 +1445,7 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
   ${data.inflectionTable && data.inflectionTable.trim() !== '' ? `
   <div class="anki-section">
     <div class="anki-label">${escapeHtml(labels.inflectionTable)}</div>
-    <div class="anki-value inflection-table">${data.inflectionTable}</div>
+    <div class="anki-value inflection-table">${typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(data.inflectionTable) : data.inflectionTable}</div>
   </div>` : ''}
   <div class="anki-section">
     <div class="anki-label">${escapeHtml(labels.example)}</div>

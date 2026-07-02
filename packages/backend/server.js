@@ -77,8 +77,8 @@ app.get('/api/config', (req, res) => {
 // 2. Set Gemini API Key (writes to .env file)
 app.post('/api/config', (req, res) => {
   const { geminiApiKey } = req.body;
-  if (!geminiApiKey || geminiApiKey.trim() === '') {
-    return res.status(400).json({ error: 'API key is required' });
+  if (typeof geminiApiKey !== 'string' || !geminiApiKey || geminiApiKey.trim() === '') {
+    return res.status(400).json({ error: 'API key is required and must be a string' });
   }
 
   // Strip any newlines to prevent environment variable injection
@@ -130,8 +130,8 @@ app.get('/api/anki/status', async (req, res) => {
 // 4. Create Anki Deck
 app.post('/api/anki/create-deck', async (req, res) => {
   const { deckName } = req.body;
-  if (!deckName) {
-    return res.status(400).json({ error: 'Deck name is required' });
+  if (typeof deckName !== 'string' || !deckName) {
+    return res.status(400).json({ error: 'Deck name is required and must be a string' });
   }
   try {
     const result = await callAnkiConnect('createDeck', { deck: deckName });
@@ -149,8 +149,11 @@ app.post('/api/generate', async (req, res) => {
   if (!apiKey) {
     return res.status(400).json({ error: 'Gemini API Key is not configured.' });
   }
-  if (!word || word.trim() === '') {
-    return res.status(400).json({ error: 'Word is required.' });
+  if (typeof word !== 'string' || !word || word.trim() === '') {
+    return res.status(400).json({ error: 'Word is required and must be a string.' });
+  }
+  if (!Array.isArray(customFieldsList)) {
+    return res.status(400).json({ error: 'customFieldsList must be an array.' });
   }
 
   // Ensure model is valid (prevent injection)
@@ -159,13 +162,13 @@ app.post('/api/generate', async (req, res) => {
 
   const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
 
-  let prompt = `Analyze the vocabulary word: "${word.trim()}" in ${sourceLang}.
-You must return the dictionary base form (原型) of the word in ${sourceLang}, its part of speech (品詞) in ${sourceLang}, its pronunciation (発音記号) in IPA format, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the word in ${targetLang}, the etymology/word origin (語源) of the word in ${targetLang} (explain prefixes, roots, suffixes, or origin in detail; do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}. If the word has conjugations, declensions, or plural forms, provide an HTML table showing them.`;
+  let prompt = `Analyze the vocabulary word, phrase, or idiom: "${word.trim()}" in ${sourceLang}.
+You must return the dictionary base form (原型) of the expression in ${sourceLang} (if it's an idiom or phrasal verb, return its standard base form, e.g., 'kick the bucket', 'look forward to'), its part of speech (品詞) in ${sourceLang} (e.g., Idiom, Phrasal Verb, Noun, Verb, etc.), its pronunciation (発音記号) in IPA format, its meaning in ${targetLang}, the core image/essence (コアイメージ) of the expression in ${targetLang} (keep it concise and clear), the etymology/word origin (語源) of the expression in ${targetLang} (explain prefixes, roots, or origin briefly. If it is a compound word (合成語), explicitly state so and briefly explain its parts. If not applicable or unknown, explicitly state "不明" (Unknown) and provide a very brief explanation. Do not output a single character or empty parentheses), and a helpful example sentence in ${sourceLang} with its translation in ${targetLang}. If the expression has conjugations, declensions, or plural forms, provide an HTML table showing them.`;
 
   const properties = {
     baseForm: {
       type: "STRING",
-      description: `The dictionary base form (原型) of the word in ${sourceLang}. Use standard capitalization rules of ${sourceLang} (e.g. in German, nouns MUST start with a capital letter like 'Haus', verbs lowercase like 'gehen'; in other languages like English, lowercase). Do NOT include the article in this field.`
+      description: `The dictionary base form (原型) of the expression in ${sourceLang}. If it is an idiom or phrase, return its base form. Use standard capitalization rules of ${sourceLang} (e.g. in German, nouns MUST start with a capital letter like 'Haus', verbs lowercase like 'gehen'; in other languages like English, lowercase). Do NOT include the article in this field.`
     },
     partOfSpeech: {
       type: "STRING",
@@ -189,11 +192,11 @@ You must return the dictionary base form (原型) of the word in ${sourceLang}, 
     },
     coreImage: {
       type: "STRING",
-      description: `The core image (コアイメージ), essential nuance, or visual/mental image of the word in ${targetLang}. Explain the fundamental concept.`
+      description: `The core image (コアイメージ), essential nuance, or visual/mental image of the word in ${targetLang}. Keep it concise and clear.`
     },
     etymology: {
       type: "STRING",
-      description: `Detailed etymology (語源) or word origin of the word in ${targetLang}. Explain prefix, roots, suffixes, or origin. Do NOT return just a single character, parenthesis, or symbol.`
+      description: `Brief etymology (語源) or word origin of the word in ${targetLang}. Explain prefix, roots, or origin concisely. If it is a compound word, state so. If not applicable or unknown, explicitly state "不明" and provide a brief explanation. Do NOT return just a single character, parenthesis, or symbol.`
     },
     inflectionTable: {
       type: "STRING",

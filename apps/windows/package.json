@@ -15,8 +15,8 @@
     "express": "^4.19.2"
   },
   "devDependencies": {
-    "electron": "30.5.1",
-    "electron-builder": "^24.13.3"
+    "electron": "43.0.0",
+    "electron-builder": "^26.15.3"
   },
   "build": {
     "publish": {
