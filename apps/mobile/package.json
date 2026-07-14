@@ -1,6 +1,6 @@
 {
   "name": "@suguanki/android",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "dependencies": {
     "@capacitor-community/file-opener": "^8.0.1",
