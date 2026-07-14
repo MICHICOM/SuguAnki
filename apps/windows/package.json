@@ -1,0 +1,61 @@
+{
+  "name": "@suguanki/windows",
+  "version": "1.0.4",
+  "description": "SuguAnki Desktop App",
+  "main": "main.js",
+  "author": "MICHICOM",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "electron-log": "^5.4.4",
+    "electron-updater": "^6.8.3",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "electron": "43.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "publish": {
+      "provider": "github",
+      "owner": "MICHICOM",
+      "repo": "SuguAnki"
+    },
+    "appId": "com.michi.suguanki",
+    "productName": "SuguAnki",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "nsis": {
+      "deleteAppDataOnUninstall": true,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "extraResources": [
+      {
+        "from": "../../packages/backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!.env"
+        ]
+      },
+      {
+        "from": "../../packages/frontend/public",
+        "to": "frontend/public",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}

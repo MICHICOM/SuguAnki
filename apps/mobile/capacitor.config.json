@@ -1,0 +1,5 @@
+{
+  "appId": "com.michi.suguanki",
+  "appName": "SuguAnki",
+  "webDir": "../../packages/frontend/public"
+}
