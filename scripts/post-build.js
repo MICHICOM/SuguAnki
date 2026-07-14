@@ -37,15 +37,33 @@ if (platform === 'windows') {
     }
   });
 } else if (platform === 'android') {
-  const apkSrc = path.join(rootDir, `apps/mobile/android/app/build/outputs/apk/debug/SuguAnki-${version}.apk`);
-  const apkDest = path.join(buildsDir, `SuguAnki-${version}.apk`);
+  const distDir = path.join(rootDir, 'apps/mobile/android/app/build/outputs/apk');
+  
+  // 優先順にコピー元の候補を探索：
+  // 1. Actions等で署名されたリリースAPK (-signed.apk)
+  // 2. 標準のリリースAPK
+  // 3. デバッグビルドのAPK
+  const possibleSources = [
+    path.join(distDir, `release/SuguAnki-${version}-signed.apk`),
+    path.join(distDir, `release/SuguAnki-${version}.apk`),
+    path.join(distDir, `debug/SuguAnki-${version}.apk`)
+  ];
 
-  console.log(`Copying Android build artifacts for version ${version}...`);
-  if (fs.existsSync(apkSrc)) {
+  let apkSrc = null;
+  for (const src of possibleSources) {
+    if (fs.existsSync(src)) {
+      apkSrc = src;
+      break;
+    }
+  }
+
+  if (apkSrc) {
+    const apkDest = path.join(buildsDir, `SuguAnki-${version}.apk`);
+    console.log(`Copying Android build artifact from ${apkSrc} to ${apkDest}...`);
     fs.copyFileSync(apkSrc, apkDest);
-    console.log(`✔ Copied SuguAnki-${version}.apk to Builds/`);
+    console.log(`✔ Copied Android APK successfully.`);
   } else {
-    console.error(`Error: Source file not found: ${apkSrc}`);
+    console.error(`Error: No Android APK found in release or debug directories.`);
     process.exit(1);
   }
 }

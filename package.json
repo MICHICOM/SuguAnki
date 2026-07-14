@@ -11,7 +11,7 @@
     "dev": "npm run dev --workspace=@suguanki/backend",
     "start:windows": "npm run start --workspace=@suguanki/windows",
     "build:windows": "npm run build --workspace=@suguanki/windows -- --publish never && node scripts/post-build.js windows",
-    "build:android": "cd apps/mobile && npx cap sync android && cd android && .\\gradlew.bat assembleDebug && cd ../../../ && node scripts/post-build.js android",
+    "build:android": "cd apps/mobile && npx cap sync android && cd android && .\\gradlew.bat assembleRelease && cd ../../../ && node scripts/post-build.js android",
     "build:all": "npm run build:windows && npm run build:android",
     "bump": "node scripts/bump-version.js"
   },

@@ -38,6 +38,19 @@ jobs:
       - name: Build Android Application
         run: npm run build:android
 
+      - name: Sign Android APK
+        uses: r0adrunner/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: apps/mobile/android/app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Copy Signed Android APK to Builds
+        run: node scripts/post-build.js android
+
       - name: Create GitHub Release Draft
         uses: softprops/action-gh-release@v2
         with:

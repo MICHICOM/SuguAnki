@@ -52,4 +52,8 @@ Thumbs.db
 # Local build artifacts directory
 Builds/
 
+# Android Keystore
+*.jks
+
+
 
