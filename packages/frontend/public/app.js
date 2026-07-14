@@ -557,6 +557,10 @@ document.addEventListener('DOMContentLoaded', () => {
             fields: params.note.fields
           });
           return result;
+        } else if (action === 'modelNames') {
+          return ['SuguAnki', 'Basic', '基本'];
+        } else if (action === 'createModel') {
+          return true;
         }
         throw new Error(`Unsupported native action: ${action}`);
       } catch (error) {
