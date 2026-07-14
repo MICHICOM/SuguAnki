@@ -1123,7 +1123,7 @@ You must return the dictionary base form (原型) of the expression in ${sourceL
     const backHtml = generateBackHtml(state.currentData);
 
     try {
-      // Always use AnkiLLM Basic by default
+      // Always use SuguAnki Basic by default
       let targetModel = 'SuguAnki Basic';
       let targetFields = { front: 'Front', back: 'Back' };
 

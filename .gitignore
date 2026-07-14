@@ -49,3 +49,7 @@ Thumbs.db
 *.tar.gz
 *.exe
 
+# Local build artifacts directory
+Builds/
+
+
