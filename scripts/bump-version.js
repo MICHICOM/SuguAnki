@@ -62,6 +62,18 @@ if (fs.existsSync(gradlePath)) {
   console.warn(`⚠ build.gradle not found at ${gradlePath}`);
 }
 
+// packages/frontend/public/app.js の更新
+const appJsPath = path.join(rootDir, 'packages/frontend/public/app.js');
+if (fs.existsSync(appJsPath)) {
+  console.log('Updating app.js CURRENT_APP_VERSION...');
+  let content = fs.readFileSync(appJsPath, 'utf8');
+  content = content.replace(/const CURRENT_APP_VERSION = "[^"]+";/, `const CURRENT_APP_VERSION = "v${newVersion}";`);
+  fs.writeFileSync(appJsPath, content, 'utf8');
+  console.log(`✔ Updated app.js CURRENT_APP_VERSION to "v${newVersion}"`);
+} else {
+  console.warn(`⚠ app.js not found at ${appJsPath}`);
+}
+
 console.log('Version bump completed successfully.');
 
 // Git 操作

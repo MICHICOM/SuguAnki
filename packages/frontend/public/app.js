@@ -1574,7 +1574,7 @@ You must return the dictionary base form (原型) of the expression in ${sourceL
   }
 
   // --- Android Auto Updater ---
-  const CURRENT_APP_VERSION = "v1.0.0"; // Update this when releasing a new version
+  const CURRENT_APP_VERSION = "v1.0.4"; // Update this when releasing a new version
   
   async function checkForAndroidUpdate() {
     if (!isAndroidApp) return;
