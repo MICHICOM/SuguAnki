@@ -115,6 +115,7 @@ const translations = {
     save_cf_btn: "フィールド設定を保存",
     app_theme_label: "アプリテーマ",
     card_theme_label: "カード出力用CSS",
+    allow_prerelease: "プレリリース版のアップデートも許可する",
     add_cf_btn: "追加"
   },
   en: {
@@ -200,6 +201,7 @@ const translations = {
     save_cf_btn: "Save Custom Fields",
     app_theme_label: "App Theme",
     card_theme_label: "Card Theme CSS",
+    allow_prerelease: "Allow prerelease updates",
     add_cf_btn: "Add"
   }
 };
@@ -231,6 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
     appLang: localStorage.getItem('suguanki_app_lang') || 'ja',
   };
 
+  // Native platform detection
+  const isAndroidApp = window.Capacitor && window.Capacitor.isNativePlatform();
+
   // DOM Elements
   const appLangSelect = document.getElementById('app-lang-select');
   const ankiStatusBadge = document.getElementById('anki-status');
@@ -245,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modelSelect = document.getElementById('model-select');
   const appThemeSelect = document.getElementById('app-theme-select');
   const cardThemeSelect = document.getElementById('card-theme-select');
+  const allowPrereleaseCb = document.getElementById('allow-prerelease-cb');
   
   const vocabForm = document.getElementById('vocab-form');
   const wordInput = document.getElementById('word-input');
@@ -304,7 +310,11 @@ document.addEventListener('DOMContentLoaded', () => {
   applyLanguage(state.appLang);
 
   // Initialize Status checks with a short delay for Capacitor
-  checkSystemStatus();
+  if (isAndroidApp) {
+    setTimeout(checkSystemStatus, 500);
+  } else {
+    checkSystemStatus();
+  }
 
   // Re-check Anki connection when window gains or loses focus if disconnected
   const handleWindowFocusBlur = () => {
@@ -368,6 +378,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (state.currentData) {
         updatePreview(state.currentData);
       }
+    });
+  }
+
+  // Restore and handle prerelease toggle state
+  if (allowPrereleaseCb) {
+    const savedAllowPrerelease = localStorage.getItem('suguanki_allow_prerelease') === 'true';
+    allowPrereleaseCb.checked = savedAllowPrerelease;
+    allowPrereleaseCb.addEventListener('change', (e) => {
+      localStorage.setItem('suguanki_allow_prerelease', e.target.checked);
     });
   }
 
@@ -532,9 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- API / Backend Interactions ---
   const ANKI_CONNECT_URL = 'http://127.0.0.1:8765';
-
-  // Native platform detection
-  const isAndroidApp = window.Capacitor && window.Capacitor.isNativePlatform();
 
   // Hide the new deck button on Android
   if (isAndroidApp) {
@@ -1577,22 +1593,83 @@ You must return the dictionary base form (原型) of the expression in ${sourceL
     }, 4000);
   }
 
+  // Compare semantic versioning strings (v1, v2).
+  // Returns:
+  //   1 if v1 > v2
+  //  -1 if v1 < v2
+  //   0 if v1 === v2
+  function semverCompare(v1, v2) {
+    const parse = (v) => {
+      const parts = v.split('-');
+      const main = parts[0].split('.').map(Number);
+      const pre = parts[1] || null;
+      return { main, pre };
+    };
+    
+    const p1 = parse(v1);
+    const p2 = parse(v2);
+    
+    for (let i = 0; i < Math.max(p1.main.length, p2.main.length); i++) {
+      const n1 = p1.main[i] || 0;
+      const n2 = p2.main[i] || 0;
+      if (n1 > n2) return 1;
+      if (n1 < n2) return -1;
+    }
+    
+    if (p1.pre && !p2.pre) return -1;
+    if (!p1.pre && p2.pre) return 1;
+    if (p1.pre && p2.pre) {
+      const pre1 = p1.pre.split('.');
+      const pre2 = p2.pre.split('.');
+      for (let i = 0; i < Math.max(pre1.length, pre2.length); i++) {
+        const id1 = pre1[i];
+        const id2 = pre2[i];
+        if (id1 === undefined && id2 !== undefined) return -1;
+        if (id1 !== undefined && id2 === undefined) return 1;
+        
+        const num1 = Number(id1);
+        const num2 = Number(id2);
+        
+        if (!isNaN(num1) && !isNaN(num2)) {
+          if (num1 > num2) return 1;
+          if (num1 < num2) return -1;
+        } else {
+          if (id1 > id2) return 1;
+          if (id1 < id2) return -1;
+        }
+      }
+    }
+    return 0;
+  }
+
   // --- Android Auto Updater ---
-  const CURRENT_APP_VERSION = "v1.0.4"; // Update this when releasing a new version
+  const CURRENT_APP_VERSION = "v1.0.5"; // Update this when releasing a new version
   
   async function checkForAndroidUpdate() {
     if (!isAndroidApp) return;
     try {
-      const response = await fetch('https://api.github.com/repos/MICHICOM/SuguAnki/releases/latest');
-      if (!response.ok) return;
+      const allowPrerelease = localStorage.getItem('suguanki_allow_prerelease') === 'true';
+      let release;
       
-      const release = await response.json();
+      if (allowPrerelease) {
+        const response = await fetch('https://api.github.com/repos/MICHICOM/SuguAnki/releases');
+        if (!response.ok) return;
+        const releases = await response.json();
+        // Find the latest release that has an APK asset
+        release = releases.find(r => r.assets && r.assets.some(a => a.name.endsWith('.apk')));
+      } else {
+        const response = await fetch('https://api.github.com/repos/MICHICOM/SuguAnki/releases/latest');
+        if (!response.ok) return;
+        release = await response.json();
+      }
+      
+      if (!release) return;
       const latestVersion = release.tag_name;
       
       const cleanLatest = latestVersion.replace(/^v/, '');
       const cleanCurrent = CURRENT_APP_VERSION.replace(/^v/, '');
       
-      if (latestVersion && cleanLatest !== cleanCurrent) {
+      if (latestVersion && semverCompare(cleanLatest, cleanCurrent) > 0) {
         // Find APK asset
         const apkAsset = release.assets.find(a => a.name.endsWith('.apk'));
         if (!apkAsset) return;

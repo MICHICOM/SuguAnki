@@ -1,6 +1,6 @@
 {
   "name": "@suguanki/frontend",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "dependencies": {
     "dompurify": "^3.4.11"
